@@ -1,2 +1,2 @@
-export * from './IdeaCard';
-export * from './IdeaForm';
+export * from './idea-card';
+export * from './idea-form';
