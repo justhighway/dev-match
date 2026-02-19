@@ -1,4 +1,4 @@
-import { ideas, users } from './schema';
+import { ideasTable, usersTable } from './schema';
 
 import { db } from './index'; // 이제 import 순서 상관 없음!
 
@@ -8,7 +8,7 @@ async function main() {
   const TEST_USER_ID = 'b466d3a8-4444-4444-4444-444444444444';
 
   await db
-    .insert(users)
+    .insert(usersTable)
     .values({
       id: TEST_USER_ID,
       email: 'test@devmatch.com',
@@ -19,7 +19,7 @@ async function main() {
     })
     .onConflictDoNothing();
 
-  await db.insert(ideas).values([
+  await db.insert(ideasTable).values([
     {
       authorId: TEST_USER_ID,
       title: '개발자들을 위한 소개팅 앱',

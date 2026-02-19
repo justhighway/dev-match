@@ -2,7 +2,7 @@ import { Button } from '@/shared/components/ui/button';
 import IdeaCard from '@/features/ideas/components/IdeaCard';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { getIdeas } from '@/features/ideas/services';
+import { getIdeas } from '@/features/ideas/services/get-ideas';
 
 export default async function IdeasPage() {
   const ideas = await getIdeas();

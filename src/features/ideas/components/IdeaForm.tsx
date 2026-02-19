@@ -1,7 +1,7 @@
 'use client';
 
-import { ActionState, createIdeaAction } from '../actions';
-import { CreateIdeaInput, createIdeaSchema } from '../schema';
+import { CreateIdeaActionState, createIdeaAction } from '../actions';
+import { CreateIdeaInput, createIdeaSchema } from '../schemas';
 
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
@@ -10,7 +10,7 @@ import { useActionState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const initialState: ActionState = {
+const initialState: CreateIdeaActionState = {
   success: false,
   message: null,
   errors: {},
@@ -23,12 +23,11 @@ export default function IdeaForm() {
   );
 
   const form = useForm<CreateIdeaInput>({
-    resolver: zodResolver(createIdeaSchema), // 버전 맞췄으니 이제 에러 없음!
+    resolver: zodResolver(createIdeaSchema),
     defaultValues: {
       title: '',
       content: '',
     },
-    // ❌ errors 속성은 여기서 삭제! (필수)
   });
 
   return (
