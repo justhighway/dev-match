@@ -5,38 +5,38 @@ import {
   text,
   timestamp,
   uuid,
-} from "drizzle-orm/pg-core";
+} from 'drizzle-orm/pg-core';
 
-import { users } from "./users";
+import { usersTable } from './users';
 
-export const showcases = pgTable("showcases", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  authorId: uuid("author_id")
-    .references(() => users.id, { onDelete: "cascade" })
+export const showcasesTable = pgTable('showcases', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  authorId: uuid('author_id')
+    .references(() => usersTable.id, { onDelete: 'cascade' })
     .notNull(),
 
-  title: text("title").notNull(),
-  summary: text("summary").notNull(),
+  title: text('title').notNull(),
+  summary: text('summary').notNull(),
 
-  githubRepoUrl: text("github_repo_url").notNull(),
-  serviceUrl: text("service_url").notNull(),
-  thumbnailUrl: text("thumbnail_url"),
+  githubRepoUrl: text('github_repo_url').notNull(),
+  serviceUrl: text('service_url').notNull(),
+  thumbnailUrl: text('thumbnail_url'),
 
-  likeCount: integer("like_count").default(0).notNull(),
+  likeCount: integer('like_count').default(0).notNull(),
 
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-export const showcaseLikes = pgTable(
-  "showcase_likes",
+export const showcaseLikesTable = pgTable(
+  'showcase_likes',
   {
-    showcaseId: uuid("showcase_id")
-      .references(() => showcases.id, { onDelete: "cascade" })
+    showcaseId: uuid('showcase_id')
+      .references(() => showcasesTable.id, { onDelete: 'cascade' })
       .notNull(),
-    userId: uuid("user_id")
-      .references(() => users.id, { onDelete: "cascade" })
+    userId: uuid('user_id')
+      .references(() => usersTable.id, { onDelete: 'cascade' })
       .notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.showcaseId, t.userId] })],
 );
