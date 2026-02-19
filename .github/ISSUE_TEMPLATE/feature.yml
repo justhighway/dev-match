@@ -1,0 +1,17 @@
+name: Feature
+description: 기능 추가 기록
+labels: ['feature']
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: 목적
+      placeholder: 왜 필요한 기능인지
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 구현 아이디어
+      placeholder: 대략적인 접근 방식

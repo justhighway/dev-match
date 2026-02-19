@@ -1,0 +1,23 @@
+name: Bug
+description: 버그 기록
+labels: ['bug']
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 문제 요약
+      placeholder: 무엇이 잘못되었는지 한 줄로
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 재현 방법
+      placeholder: 단계별로 간단히
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대 동작
+      placeholder: 정상 동작은 무엇인가
