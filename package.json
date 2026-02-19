@@ -11,7 +11,9 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "db:push": "drizzle-kit push",
-    "db:seed": "dotenv -e .env.local -- tsx src/db/seed.ts"
+    "db:seed": "dotenv -e .env.local -- tsx src/db/seed.ts",
+    "prepare": "husky install",
+    "lint-staged": "lint-staged --config lint-staged.config.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -31,6 +33,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -44,6 +48,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.4.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "shadcn": "^3.8.4",
