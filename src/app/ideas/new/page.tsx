@@ -1,4 +1,4 @@
-import IdeaForm from '@/features/ideas/components/IdeaForm';
+import IdeaForm from '@/features/ideas/components/idea-form';
 
 export default function NewIdeaPage() {
   return (
