@@ -21,7 +21,7 @@ interface UserMenuProps {
 export default function UserMenu({ user }: UserMenuProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="focus:visible:ring-2 focus-visible:ring-ring cursor-pointer rounded-full focus-visible:outline-none">
+      <DropdownMenuTrigger className="focus-visible:ring-ring cursor-pointer rounded-full focus-visible:ring-2 focus-visible:outline-none">
         <Avatar>
           <AvatarImage src={user.avatarUrl || ''} />
           <AvatarFallback>{user.nickname.charAt(0)}</AvatarFallback>

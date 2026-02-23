@@ -1,7 +1,7 @@
 import { desc, eq } from 'drizzle-orm';
-import { ideasTable, usersTable } from '@/db/schema';
+import { ideasTable, usersTable } from '@/shared/server/db/schema';
 
-import { db } from '@/db';
+import { db } from '@/shared/server/db';
 
 export async function getIdeas() {
   const rows = await db

@@ -1,6 +1,6 @@
-import { ideasTable, usersTable } from '@/db/schema';
+import { ideasTable, usersTable } from '@/shared/server/db/schema';
 
-import { db } from '@/db';
+import { db } from '@/shared/server/db';
 import { eq } from 'drizzle-orm';
 
 export async function getIdea(id: string) {
