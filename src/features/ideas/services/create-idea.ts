@@ -1,6 +1,6 @@
 import { CreateIdeaDto } from './types';
-import { db } from '@/shared/server/db';
-import { ideasTable } from '@/shared/server/db/schema';
+import { db } from '@/shared/db';
+import { ideasTable } from '@/shared/db/schema';
 
 export async function createIdea(data: CreateIdeaDto) {
   const [newIdea] = await db
