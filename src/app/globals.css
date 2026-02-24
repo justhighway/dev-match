@@ -7,8 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-pretendard);
+  --font-mono: ui-monospace, 'Cascadia Code', monospace;
 
   /* Toss-like 쫀득한 애니메이션 타이밍 변수 추가 */
   --animate-spring-up: spring-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
