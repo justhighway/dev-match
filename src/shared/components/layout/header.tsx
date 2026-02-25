@@ -2,22 +2,22 @@ import NavLinks from './nav-links';
 import UserMenu from './user-menu';
 import Logo from './logo';
 import Container from './container';
+import LoginButton from './login-button';
+import { createClient } from '@/shared/supabase/server';
 
-interface HeaderProps {
-  user: {
-    nickname: string;
-    avatarUrl: string | null;
-  };
-}
+export default async function Header() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-export default function Header({ user }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b backdrop-blur-2xl">
       <Container className="flex h-16 items-center justify-between">
         <Logo />
         <div className="flex items-center gap-6">
           <NavLinks />
-          <UserMenu user={{ nickname: 'John Doe', avatarUrl: null }} />
+          {user ? <UserMenu user={user} /> : <LoginButton />}
         </div>
       </Container>
     </header>
