@@ -26,6 +26,7 @@ export async function signUpWithEmailAction(
   });
 
   if (error) {
+    console.error('Supabase signUp error:', error);
     return { success: false, message: '회원가입 중 오류가 발생했습니다.' };
   }
 

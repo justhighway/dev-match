@@ -2,8 +2,12 @@ import { MailCheck } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/shared/components/ui/button';
 import Container from '@/shared/components/layout/container';
+import { featureFlags } from '@/shared/config/feature-flags';
+import { redirect } from 'next/navigation';
 
 export default function SignupVerifyPage() {
+  if (!featureFlags.emailAuth) redirect('/auth/login');
+
   return (
     <Container className="flex flex-1 items-center justify-center py-12">
       <div className="w-full max-w-sm space-y-6 text-center">

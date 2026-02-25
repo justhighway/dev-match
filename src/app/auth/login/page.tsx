@@ -4,6 +4,7 @@ import { Button } from '@/shared/components/ui/button';
 import SocialLoginButton from '@/features/auth/components/social-login-button';
 import { Divider } from '@/shared/components/ui/divider';
 import Container from '@/shared/components/layout/container';
+import { featureFlags } from '@/shared/config/feature-flags';
 
 export default function LoginPage() {
   return (
@@ -18,22 +19,26 @@ export default function LoginPage() {
         <div className="flex flex-col space-y-4">
           <SocialLoginButton provider="github" />
           <SocialLoginButton provider="google" />
-          <Divider label="또는" />
-          <Button asChild variant="outline" className="w-full">
-            <Link href="/auth/login/email">
-              <Mail className="size-4" />
-              이메일로 로그인
-            </Link>
-          </Button>
-          <p className="text-muted-foreground text-center">
-            계정이 없으신가요?{' '}
-            <Link
-              href="/auth/signup"
-              className="text-primary font-medium hover:underline"
-            >
-              회원가입
-            </Link>
-          </p>
+          {featureFlags.emailAuth && (
+            <>
+              <Divider label="또는" />
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/auth/login/email">
+                  <Mail className="size-4" />
+                  이메일로 로그인
+                </Link>
+              </Button>
+              <p className="text-muted-foreground text-center">
+                계정이 없으신가요?{' '}
+                <Link
+                  href="/auth/signup"
+                  className="text-primary font-medium hover:underline"
+                >
+                  회원가입
+                </Link>
+              </p>
+            </>
+          )}
         </div>
       </div>
     </Container>

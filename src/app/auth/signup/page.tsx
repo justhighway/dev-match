@@ -2,8 +2,12 @@ import SignupForm from '@/features/auth/components/signup-form';
 import SocialLoginButton from '@/features/auth/components/social-login-button';
 import { Divider } from '@/shared/components/ui/divider';
 import Container from '@/shared/components/layout/container';
+import { featureFlags } from '@/shared/config/feature-flags';
+import { redirect } from 'next/navigation';
 
 export default function SignupPage() {
+  if (!featureFlags.emailAuth) redirect('/auth/login');
+
   return (
     <Container className="flex flex-1 items-center justify-center py-12">
       <div className="flex w-full max-w-sm flex-col space-y-4">
