@@ -39,7 +39,7 @@ export default function SocialLoginButton({
       <Button
         type="submit"
         variant="outline"
-        className="hover:bg-accent hover:text-accent-foreground flex w-full space-x-2"
+        className="hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer space-x-2"
       >
         <Icon className="size-4" />
         <span>{label}</span>

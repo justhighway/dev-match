@@ -1,11 +1,12 @@
 import { MailCheck } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/shared/components/ui/button';
+import Container from '@/shared/components/layout/container';
 
 export default function SignupVerifyPage() {
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
-      <div className="w-full max-w-sm space-y-6 px-4 text-center">
+    <Container className="flex flex-1 items-center justify-center py-12">
+      <div className="w-full max-w-sm space-y-6 text-center">
         <MailCheck className="text-primary mx-auto size-12" />
 
         <div className="space-y-2">
@@ -26,6 +27,6 @@ export default function SignupVerifyPage() {
           <Link href="/auth/login">로그인으로 돌아가기</Link>
         </Button>
       </div>
-    </div>
+    </Container>
   );
 }
