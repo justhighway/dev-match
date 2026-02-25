@@ -18,6 +18,7 @@ export default function LoginPage() {
 
         <div className="flex flex-col space-y-4">
           <SocialLoginButton provider="github" />
+          <SocialLoginButton provider="kakao" />
           <SocialLoginButton provider="google" />
           {featureFlags.emailAuth && (
             <>

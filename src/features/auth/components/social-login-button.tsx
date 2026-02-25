@@ -1,9 +1,14 @@
 import { Github } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { GoogleIcon } from './google-icon';
-import { signInWithGithub, signInWithGoogle } from '@/features/auth/actions';
+import {
+  signInWithGithub,
+  signInWithGoogle,
+  signInWithKakao,
+} from '@/features/auth/actions';
+import { KakaoIcon } from './kakao-icon';
 
-type SocialProvider = 'github' | 'google';
+type SocialProvider = 'github' | 'google' | 'kakao';
 
 const PROVIDERS: Record<
   SocialProvider,
@@ -22,6 +27,11 @@ const PROVIDERS: Record<
     label: 'Google로 로그인',
     icon: GoogleIcon,
     action: signInWithGoogle,
+  },
+  kakao: {
+    label: 'Kakao로 로그인',
+    icon: KakaoIcon,
+    action: signInWithKakao,
   },
 };
 
