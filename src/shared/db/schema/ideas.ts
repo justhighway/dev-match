@@ -12,6 +12,7 @@ export const ideasTable = pgTable('ideas', {
   title: text('title').notNull(),
   content: text('content').notNull(),
   likeCount: integer('like_count').default(0).notNull(),
+  bookmarkCount: integer('bookmark_count').default(0).notNull(),
   viewCount: integer('view_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

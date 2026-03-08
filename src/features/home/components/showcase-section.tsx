@@ -12,11 +12,7 @@ export default async function ShowcaseSection() {
         <EmptyState message="아직 등록된 프로젝트가 없어요" />
       ) : (
         showcases.map((s) => (
-          <div
-            key={s.id}
-            className="w-[280px] shrink-0 md:w-[340px]"
-            style={{ scrollSnapAlign: 'start' }}
-          >
+          <div key={s.id} className="w-70 shrink-0 snap-start md:w-84">
             <ShowcaseCard showcase={s} />
           </div>
         ))

@@ -1,4 +1,5 @@
 import {
+  integer,
   pgEnum,
   pgTable,
   primaryKey,
@@ -24,9 +25,16 @@ export const recruitmentsTable = pgTable('recruitments', {
   content: text('content').notNull(),
 
   techStacks: text('tech_stacks').array().notNull(),
+  projectType: text('project_type'),
+  roles: text('roles').array().notNull().default([]),
+  headcount: integer('headcount').notNull().default(2),
   openChatUrl: text('open_chat_url').notNull(),
 
   isClosed: text('is_closed').default('FALSE'),
+
+  likeCount: integer('like_count').default(0).notNull(),
+  bookmarkCount: integer('bookmark_count').default(0).notNull(),
+  viewCount: integer('view_count').default(0).notNull(),
 
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

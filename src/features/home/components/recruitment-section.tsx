@@ -12,11 +12,7 @@ export default async function RecruitmentSection() {
         <EmptyState message="아직 등록된 팀원 모집이 없어요" />
       ) : (
         recruitments.map((r) => (
-          <div
-            key={r.id}
-            className="w-[280px] shrink-0 md:w-[320px]"
-            style={{ scrollSnapAlign: 'start' }}
-          >
+          <div key={r.id} className="w-70 shrink-0 snap-start md:w-80">
             <RecruitmentCard recruitment={r} />
           </div>
         ))
