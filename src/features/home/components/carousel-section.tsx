@@ -94,8 +94,7 @@ export default function CarouselSection({
       {/* 스크롤 영역 */}
       <div
         ref={scrollRef}
-        className="no-scrollbar flex gap-4 overflow-x-auto scroll-smooth pb-2"
-        style={{ scrollSnapType: 'x mandatory' }}
+        className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2"
       >
         {children}
       </div>

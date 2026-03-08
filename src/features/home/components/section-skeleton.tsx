@@ -20,7 +20,7 @@ export default function SectionSkeleton({
           <div
             key={i}
             className={cn(
-              'bg-muted w-[280px] shrink-0 rounded-2xl md:w-[320px]',
+              'bg-muted w-70 shrink-0 rounded-2xl md:w-80',
               cardHeight,
             )}
           />
