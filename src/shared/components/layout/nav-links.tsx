@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 
 const navLinks = [
   {
-    href: '/',
+    href: '/showcase',
     label: '쇼케이스',
   },
   {
