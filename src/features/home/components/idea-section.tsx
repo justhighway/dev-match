@@ -13,11 +13,7 @@ export default async function IdeaSection() {
         <EmptyState message="아직 등록된 아이디어가 없어요" />
       ) : (
         featured.map((idea) => (
-          <div
-            key={idea.id}
-            className="w-[280px] shrink-0 md:w-[320px]"
-            style={{ scrollSnapAlign: 'start' }}
-          >
+          <div key={idea.id} className="w-70 shrink-0 snap-start md:w-80">
             <IdeaCard idea={idea} />
           </div>
         ))

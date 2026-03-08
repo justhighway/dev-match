@@ -159,4 +159,14 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* 4. 최대 너비 컨테이너 (120rem = 1920px) — Tailwind 기본 스케일에 없는 값 */
+  .max-w-screen-3xl {
+    max-width: 120rem;
+  }
+
+  /* 5. 다이얼로그 스크롤 영역 최대 높이 (헤더 4rem 제외한 90vh) */
+  .max-h-dialog-content {
+    max-height: calc(90vh - 4rem);
+  }
 }

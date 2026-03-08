@@ -11,7 +11,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "db:push": "drizzle-kit push",
-    "db:seed": "dotenv -e .env.local -- tsx src/db/seed.ts",
+    "db:seed": "dotenv -e .env.local -- tsx src/shared/db/seed.ts",
     "prepare": "husky install",
     "lint-staged": "lint-staged --config lint-staged.config.mjs"
   },
@@ -31,6 +31,7 @@
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.1",
     "tailwind-merge": "^3.4.0",
+    "vaul": "^1.1.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {

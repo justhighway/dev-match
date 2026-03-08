@@ -10,6 +10,8 @@ export async function getIdeas() {
       title: ideasTable.title,
       content: ideasTable.content,
       likeCount: ideasTable.likeCount,
+      bookmarkCount: ideasTable.bookmarkCount,
+      viewCount: ideasTable.viewCount,
       createdAt: ideasTable.createdAt,
       author: {
         nickname: usersTable.nickname,
