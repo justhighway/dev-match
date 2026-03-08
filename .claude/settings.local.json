@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls C:\\\\Users\\\\popo\\\\Desktop\\\\backup\\\\workspace\\\\project\\\\dev-match\\\\src\\\\app\\\\\\\\:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}
