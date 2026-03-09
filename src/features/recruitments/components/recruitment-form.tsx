@@ -16,6 +16,8 @@ import { Search, X } from 'lucide-react';
 import { useActionState, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useScrollDirection } from '@/shared/hooks/use-scroll-direction';
+
 import {
   createRecruitmentAction,
   type CreateRecruitmentActionState,
@@ -29,11 +31,13 @@ import {
   RECRUITMENT_HEADCOUNT_MAX,
   RECRUITMENT_HEADCOUNT_MIN,
   RECRUITMENT_SUMMARY_MAX,
+  RECRUITMENT_TITLE_MAX,
 } from '../constants/recruitment';
 import {
   createRecruitmentSchema,
   type CreateRecruitmentInput,
 } from '../schemas/create-recruitment';
+import { Button } from '@/shared/components/ui/button';
 
 const initialState: CreateRecruitmentActionState = {
   success: false,
@@ -70,7 +74,7 @@ function TechStackSelector({
     <div className="border-border rounded-xl border">
       {/* 검색창 */}
       <div className="border-b px-3 py-2.5">
-        <div className="border-border bg-secondary flex items-center gap-2 rounded-lg border px-3 py-2">
+        <div className="border-border flex items-center gap-2 rounded-lg border px-3 py-2">
           <Search className="text-muted-foreground size-4 shrink-0" />
           <input
             type="text"
@@ -149,6 +153,8 @@ function TechStackSelector({
 }
 
 export default function RecruitmentForm() {
+  const isScrollingUp = useScrollDirection();
+
   const [state, formAction] = useActionState(
     createRecruitmentAction,
     initialState,
@@ -186,19 +192,23 @@ export default function RecruitmentForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* 제목 */}
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                제목 <span className="text-destructive">*</span>
+              <FormLabel
+                htmlFor="title-input"
+                className="text-base font-semibold"
+              >
+                제목<span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="프로젝트 팀원 모집 제목을 입력해주세요"
+                  placeholder={`프로젝트 팀원 모집 제목을 입력해주세요 (최대 ${RECRUITMENT_TITLE_MAX}자)`}
+                  id="title-input"
                   {...field}
                 />
               </FormControl>
@@ -213,8 +223,11 @@ export default function RecruitmentForm() {
           name="summary"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                한 줄 소개{' '}
+              <FormLabel
+                htmlFor="intro-input"
+                className="text-base font-semibold"
+              >
+                한 줄 소개
                 <span className="text-muted-foreground text-sm font-normal">
                   (선택)
                 </span>
@@ -237,12 +250,16 @@ export default function RecruitmentForm() {
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel
+                htmlFor="content-textarea"
+                className="text-base font-semibold"
+              >
                 내용 <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
+                  id="content-textarea"
                   placeholder="프로젝트 소개, 진행 방식, 지원 방법 등을 자유롭게 작성해주세요"
                   className="min-h-48 resize-none"
                 />
@@ -253,18 +270,22 @@ export default function RecruitmentForm() {
         />
 
         {/* 모집조건 묶음 */}
-        <fieldset className="space-y-6">
-          <legend className="text-base font-semibold">모집조건</legend>
-
+        <fieldset className="space-y-8">
           {/* 모집종류 */}
           <FormField
             control={form.control}
             name="projectType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
+                <FormLabel
+                  htmlFor="type-option-selector"
+                  className="text-base font-semibold"
+                >
                   모집종류 <span className="text-destructive">*</span>
                 </FormLabel>
+                <p className="text-muted-foreground -mt-1.5 mb-1 text-sm">
+                  프로젝트의 종류를 선택해주세요.
+                </p>
                 <FormControl>
                   <div className="flex flex-wrap gap-2">
                     {RECRUITMENT_TYPE_OPTIONS.map(({ label, value }) => (
@@ -297,9 +318,15 @@ export default function RecruitmentForm() {
             name="roles"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
+                <FormLabel
+                  htmlFor="role-options-selector"
+                  className="text-base font-semibold"
+                >
                   모집대상 <span className="text-destructive">*</span>
                 </FormLabel>
+                <p className="text-muted-foreground -mt-1.5 mb-1 text-sm">
+                  프로젝트의 종류를 선택해주세요.
+                </p>
                 <FormControl>
                   <div className="flex flex-wrap gap-2">
                     {ROLE_OPTIONS.map(({ label, value }) => {
@@ -340,7 +367,10 @@ export default function RecruitmentForm() {
             name="headcount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
+                <FormLabel
+                  htmlFor="headcount-input"
+                  className="text-base font-semibold"
+                >
                   모집인원 <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
@@ -374,7 +404,7 @@ export default function RecruitmentForm() {
           name="techStacks"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="text-base font-semibold">
                 기술스택 <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
@@ -394,12 +424,16 @@ export default function RecruitmentForm() {
           name="openChatUrl"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel
+                htmlFor="contact-url-input"
+                className="text-base font-semibold"
+              >
                 카카오톡 오픈채팅 링크{' '}
                 <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Input
+                  id="contact-url-input"
                   type="url"
                   placeholder="https://open.kakao.com/o/..."
                   {...field}
@@ -415,21 +449,21 @@ export default function RecruitmentForm() {
           <p className="text-destructive text-sm">{state.message}</p>
         )}
 
-        <div className="flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => history.back()}
-            className="border-border text-foreground hover:bg-secondary cursor-pointer rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors"
-          >
-            취소
-          </button>
-          <button
+        {/* floating 제출 버튼 */}
+        <div
+          className={cn(
+            'max-w-screen-3xl fixed bottom-10 left-1/2 w-full -translate-x-1/2 px-6 transition-transform duration-300 ease-in-out md:px-8',
+            isScrollingUp ? 'translate-y-0' : 'translate-y-24',
+          )}
+        >
+          <Button
             type="submit"
+            size="lg"
+            className="w-full shadow-lg"
             disabled={isPending || !form.formState.isValid}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer rounded-lg px-5 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isPending ? '등록 중...' : '모집 등록'}
-          </button>
+          </Button>
         </div>
       </form>
     </Form>
