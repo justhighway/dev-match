@@ -7,7 +7,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Form } from '@/shared/components/ui/form';
 import { signUpWithEmailAction } from '../actions';
 import { signUpSchema, type SignUpInput } from '../schemas';
-import { FormInput } from './form-input';
+import { FormInput } from '@/shared/components/ui/form-input';
 
 export default function SignupForm() {
   const form = useForm<SignUpInput>({
@@ -42,6 +42,7 @@ export default function SignupForm() {
           label="닉네임"
           placeholder="2~20자"
           autoComplete="username"
+          required
         />
         <FormInput
           control={form.control}
@@ -50,6 +51,7 @@ export default function SignupForm() {
           type="email"
           placeholder="you@example.com"
           autoComplete="email"
+          required
         />
         <FormInput
           control={form.control}
@@ -58,6 +60,7 @@ export default function SignupForm() {
           type="password"
           placeholder="8자 이상"
           autoComplete="new-password"
+          required
         />
         <FormInput
           control={form.control}
@@ -66,6 +69,7 @@ export default function SignupForm() {
           type="password"
           placeholder="••••••••"
           autoComplete="new-password"
+          required
         />
 
         {form.formState.errors.root && (

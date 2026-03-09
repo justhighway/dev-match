@@ -7,7 +7,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Form } from '@/shared/components/ui/form';
 import { signInWithEmailAction } from '../actions';
 import { signInSchema, type SignInInput } from '../schemas';
-import { FormInput } from './form-input';
+import { FormInput } from '@/shared/components/ui/form-input';
 
 export default function EmailLoginForm() {
   const form = useForm<SignInInput>({
@@ -32,6 +32,7 @@ export default function EmailLoginForm() {
           type="email"
           placeholder="you@example.com"
           autoComplete="email"
+          required
         />
         <FormInput
           control={form.control}
@@ -40,6 +41,7 @@ export default function EmailLoginForm() {
           type="password"
           placeholder="••••••••"
           autoComplete="current-password"
+          required
         />
 
         {form.formState.errors.root && (
