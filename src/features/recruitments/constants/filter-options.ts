@@ -276,6 +276,11 @@ export const ALL_TECH_STACKS = [
   ]),
 ].sort();
 
+export {
+  RECRUITMENT_HEADCOUNT_MIN as MIN_HEADCOUNT,
+  RECRUITMENT_HEADCOUNT_MAX as MAX_HEADCOUNT,
+} from './recruitment';
+
 export type SortValue = (typeof SORT_OPTIONS)[number]['value'];
 export type RecruitmentTypeValue =
   (typeof RECRUITMENT_TYPE_OPTIONS)[number]['value'];

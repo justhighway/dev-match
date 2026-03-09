@@ -1,0 +1,9 @@
+export const RECRUITMENT_TITLE_MIN = 1;
+export const RECRUITMENT_TITLE_MAX = 50;
+
+export const RECRUITMENT_SUMMARY_MAX = 100;
+
+export const RECRUITMENT_CONTENT_MIN = 10;
+
+export const RECRUITMENT_HEADCOUNT_MIN = 1;
+export const RECRUITMENT_HEADCOUNT_MAX = 10;
