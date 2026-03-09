@@ -6,6 +6,7 @@ import type { SortValue } from '../constants/filter-options';
 
 const SELECTED_FIELDS = {
   id: recruitmentsTable.id,
+  numId: recruitmentsTable.numId,
   title: recruitmentsTable.title,
   summary: recruitmentsTable.summary,
   techStacks: recruitmentsTable.techStacks,

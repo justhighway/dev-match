@@ -3,6 +3,7 @@ import {
   pgEnum,
   pgTable,
   primaryKey,
+  serial,
   text,
   timestamp,
   uuid,
@@ -14,6 +15,7 @@ export const roleEnum = pgEnum('recruit_role', ['LEADER', 'MEMBER']);
 
 export const recruitmentsTable = pgTable('recruitments', {
   id: uuid('id').defaultRandom().primaryKey(),
+  numId: serial('num_id').unique().notNull(),
   leaderId: uuid('leader_id')
     .references(() => usersTable.id, {
       onDelete: 'cascade',
