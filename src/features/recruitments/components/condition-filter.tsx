@@ -57,6 +57,7 @@ function ChipButton({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={cn(
         'cursor-pointer rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
@@ -205,6 +206,7 @@ export default function ConditionFilter({
 
   const trigger = (
     <button
+      type="button"
       onClick={() => handleOpen(true)}
       className={cn(
         'flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',

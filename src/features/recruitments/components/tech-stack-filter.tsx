@@ -47,6 +47,7 @@ function TechStackContent({
           />
           {query && (
             <button
+              type="button"
               onClick={() => onQueryChange('')}
               className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
             >
@@ -67,6 +68,7 @@ function TechStackContent({
             {filtered.map((stack) => (
               <button
                 key={stack}
+                type="button"
                 onClick={() => onToggle(stack)}
                 className={cn(
                   'cursor-pointer rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
@@ -97,6 +99,7 @@ function TechStackContent({
               >
                 {stack}
                 <button
+                  type="button"
                   onClick={() => onRemove(stack)}
                   className="cursor-pointer opacity-60 transition-opacity hover:opacity-100"
                 >
@@ -146,6 +149,7 @@ export default function TechStackFilter({
 
   const trigger = (
     <button
+      type="button"
       onClick={() => handleOpen(true)}
       className={cn(
         'flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',
