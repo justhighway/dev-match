@@ -53,6 +53,7 @@ export default function FilterPopover({
     <Popover>
       <PopoverTrigger asChild>
         <button
+          type="button"
           className={cn(
             'flex w-fit cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
             isActive
@@ -71,6 +72,7 @@ export default function FilterPopover({
           <span className="text-sm font-semibold">{label}</span>
           {isActive && (
             <button
+              type="button"
               onClick={() => onChange([])}
               className="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors"
             >

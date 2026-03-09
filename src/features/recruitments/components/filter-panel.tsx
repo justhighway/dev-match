@@ -31,6 +31,7 @@ interface FilterPanelProps {
 function CloseButton({ onClick }: { onClick: () => void }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className="text-muted-foreground hover:text-foreground cursor-pointer rounded-md p-1 transition-colors"
     >
@@ -51,6 +52,7 @@ export function FilterFooter({
   return (
     <div className="flex gap-2">
       <button
+        type="button"
         onClick={onReset}
         disabled={disableReset}
         className={cn(
@@ -63,6 +65,7 @@ export function FilterFooter({
         초기화
       </button>
       <button
+        type="button"
         onClick={onApply}
         className="bg-primary text-primary-foreground hover:bg-primary/90 flex-2 cursor-pointer rounded-lg py-2.5 text-sm font-medium transition-colors"
       >

@@ -72,6 +72,7 @@ export default function CarouselSection({
           {/* 화살표 버튼 (md 이상에서만) */}
           <div className="hidden items-center gap-1 md:flex">
             <button
+              type="button"
               onClick={() => scroll('left')}
               disabled={!canScrollLeft}
               aria-label="이전"
@@ -80,6 +81,7 @@ export default function CarouselSection({
               <ChevronLeft className="size-4" />
             </button>
             <button
+              type="button"
               onClick={() => scroll('right')}
               disabled={!canScrollRight}
               aria-label="다음"
