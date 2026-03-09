@@ -81,8 +81,12 @@ export default function FilterPopover({
         <ul className="flex flex-col gap-0.5">
           {options.map(({ label: optLabel, value }) => (
             <li key={value}>
-              <label className="hover:bg-secondary flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-2 text-sm">
+              <label
+                htmlFor={`filter-${value}`}
+                className="hover:bg-secondary flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-2 text-sm"
+              >
                 <Checkbox
+                  id={`filter-${value}`}
                   checked={selected.includes(value)}
                   onCheckedChange={() => toggle(value)}
                 />

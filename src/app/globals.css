@@ -169,4 +169,13 @@
   .max-h-dialog-content {
     max-height: calc(90vh - 4rem);
   }
+
+  /* 6. number input 스피너 숨기기 */
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+  .no-spinner {
+    -moz-appearance: textfield;
+  }
 }
