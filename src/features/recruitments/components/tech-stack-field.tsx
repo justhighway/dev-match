@@ -1,11 +1,11 @@
 'use client';
 
-import { Checkbox } from '@/shared/components/ui/checkbox';
-import { cn } from '@/shared/lib/utils';
-import { X } from 'lucide-react';
-import { useState } from 'react';
-
 import { ROLE_OPTIONS, TECH_STACKS_BY_ROLE } from '../constants/filter-options';
+
+import { Checkbox } from '@/shared/components/ui/checkbox';
+import { X } from 'lucide-react';
+import { cn } from '@/shared/lib/utils';
+import { useState } from 'react';
 
 interface TechStackFieldProps {
   selected: string[];
@@ -45,6 +45,7 @@ export default function TechStackField({
               <button
                 type="button"
                 onClick={() => remove(stack)}
+                aria-label={`${stack} 닫기`}
                 className="cursor-pointer rounded-full opacity-60 transition-opacity hover:opacity-100"
               >
                 <X className="size-3" />

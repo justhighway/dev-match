@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/shared/components/ui/form';
-import { FormInput } from '@/shared/components/ui/form-input';
+import { Input } from '@/shared/components/ui/input';
 import { Slider } from '@/shared/components/ui/slider';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { cn } from '@/shared/lib/utils';
@@ -53,7 +53,7 @@ export default function RecruitmentForm() {
       content: '',
       projectType: '',
       roles: [],
-      headcount: 2,
+      headcount: 1,
       techStacks: [],
       openChatUrl: '',
     },
@@ -72,21 +72,47 @@ export default function RecruitmentForm() {
         )}
 
         {/* 제목 */}
-        <FormInput
+        <FormField
           control={form.control}
           name="title"
-          label="제목"
-          placeholder="프로젝트 팀원 모집 제목을 입력해주세요"
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                제목 <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="프로젝트 팀원 모집 제목을 입력해주세요"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
         {/* 한 줄 소개 (선택) */}
-        <FormInput
+        <FormField
           control={form.control}
           name="summary"
-          label="한 줄 소개"
-          placeholder="프로젝트를 한 문장으로 소개해주세요 (최대 200자)"
-          maxLength={200}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                한 줄 소개{' '}
+                <span className="text-muted-foreground text-sm font-normal">
+                  (선택)
+                </span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="프로젝트를 한 문장으로 소개해주세요 (최대 100자)"
+                  maxLength={100}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
         {/* 내용 */}
@@ -131,6 +157,8 @@ export default function RecruitmentForm() {
                       <button
                         key={value}
                         type="button"
+                        aria-pressed={field.value === value}
+                        disabled={isPending}
                         onClick={() => field.onChange(value)}
                         className={cn(
                           'cursor-pointer rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
@@ -170,6 +198,8 @@ export default function RecruitmentForm() {
                         <button
                           key={value}
                           type="button"
+                          aria-pressed={selected}
+                          disabled={isPending}
                           onClick={() => {
                             const next = selected
                               ? field.value.filter((v) => v !== value)
@@ -253,13 +283,25 @@ export default function RecruitmentForm() {
         />
 
         {/* 카카오톡 오픈채팅 링크 */}
-        <FormInput
+        <FormField
           control={form.control}
           name="openChatUrl"
-          label="카카오톡 오픈채팅 링크"
-          placeholder="https://open.kakao.com/o/..."
-          type="url"
-          required
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                카카오톡 오픈채팅 링크{' '}
+                <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="url"
+                  placeholder="https://open.kakao.com/o/..."
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
         <div className="flex justify-end gap-3">
