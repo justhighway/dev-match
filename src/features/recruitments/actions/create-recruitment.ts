@@ -1,11 +1,16 @@
 'use server';
 
 import { createClient } from '@/shared/supabase/server';
-import { createRecruitment } from '../services/create-recruitment';
-import { createRecruitmentSchema } from '../schemas/create-recruitment';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+
+import {
+  RECRUITMENT_HEADCOUNT_MAX,
+  RECRUITMENT_HEADCOUNT_MIN,
+} from '../constants/recruitment';
+import { createRecruitmentSchema } from '../schemas/create-recruitment';
+import { createRecruitment } from '../services/create-recruitment';
 
 export interface CreateRecruitmentActionState {
   success: boolean;
@@ -14,7 +19,11 @@ export interface CreateRecruitmentActionState {
 }
 
 const formSchema = createRecruitmentSchema.extend({
-  headcount: z.coerce.number().int().min(1).max(10),
+  headcount: z.coerce
+    .number()
+    .int()
+    .min(RECRUITMENT_HEADCOUNT_MIN)
+    .max(RECRUITMENT_HEADCOUNT_MAX),
 });
 
 export async function createRecruitmentAction(
