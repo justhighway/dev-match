@@ -11,7 +11,7 @@ export default function RecruitmentCard({ recruitment }: RecruitmentCardProps) {
     <PostCard
       variant="recruitment"
       id={recruitment.id}
-      href={`/recruitments/${recruitment.id}`}
+      href={`/recruitments/${recruitment.numId}`}
       title={recruitment.title}
       summary={recruitment.summary}
       author={recruitment.leader}
