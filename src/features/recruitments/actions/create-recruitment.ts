@@ -1,13 +1,11 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import { z } from 'zod';
-
 import { createClient } from '@/shared/supabase/server';
-
-import { createRecruitmentSchema } from '../schemas/create-recruitment';
 import { createRecruitment } from '../services/create-recruitment';
+import { createRecruitmentSchema } from '../schemas/create-recruitment';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 
 export interface CreateRecruitmentActionState {
   success: boolean;
@@ -17,8 +15,6 @@ export interface CreateRecruitmentActionState {
 
 const formSchema = createRecruitmentSchema.extend({
   headcount: z.coerce.number().int().min(1).max(10),
-  roles: z.array(z.string()).or(z.string().transform((v) => [v])),
-  techStacks: z.array(z.string()).or(z.string().transform((v) => [v])),
 });
 
 export async function createRecruitmentAction(
@@ -55,12 +51,22 @@ export async function createRecruitmentAction(
     };
   }
 
-  const created = await createRecruitment({
-    ...parsed.data,
-    summary: parsed.data.summary ?? '',
-    leaderId: user.id,
-  });
+  let numId: number;
+  try {
+    const created = await createRecruitment({
+      ...parsed.data,
+      summary: parsed.data.summary ?? '',
+      leaderId: user.id,
+    });
+    numId = created.numId;
+  } catch {
+    return {
+      success: false,
+      message:
+        '모집 글 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+    };
+  }
 
   revalidatePath('/recruitments');
-  redirect(`/recruitments/${created.numId}`);
+  redirect(`/recruitments/${numId}`);
 }
