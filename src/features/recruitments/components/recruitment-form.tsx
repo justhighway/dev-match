@@ -9,29 +9,31 @@ import {
   FormMessage,
 } from '@/shared/components/ui/form';
 import { Input } from '@/shared/components/ui/input';
-import { Slider } from '@/shared/components/ui/slider';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { cn } from '@/shared/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useActionState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { Search, X } from 'lucide-react';
+import { useActionState, useState, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
 
 import {
   createRecruitmentAction,
   type CreateRecruitmentActionState,
 } from '../actions/create-recruitment';
 import {
+  ALL_TECH_STACKS,
   RECRUITMENT_TYPE_OPTIONS,
   ROLE_OPTIONS,
 } from '../constants/filter-options';
 import {
+  RECRUITMENT_HEADCOUNT_MAX,
+  RECRUITMENT_HEADCOUNT_MIN,
+  RECRUITMENT_SUMMARY_MAX,
+} from '../constants/recruitment';
+import {
   createRecruitmentSchema,
   type CreateRecruitmentInput,
 } from '../schemas/create-recruitment';
-import TechStackField from './tech-stack-field';
-
-const MIN = 1;
-const MAX = 10;
 
 const initialState: CreateRecruitmentActionState = {
   success: false,
@@ -39,38 +41,152 @@ const initialState: CreateRecruitmentActionState = {
   errors: {},
 };
 
+function TechStackSelector({
+  selected,
+  onChange,
+}: {
+  selected: string[];
+  onChange: (values: string[]) => void;
+}) {
+  const [query, setQuery] = useState('');
+
+  const filtered = query.trim()
+    ? ALL_TECH_STACKS.filter((s) =>
+        s.toLowerCase().includes(query.trim().toLowerCase()),
+      )
+    : ALL_TECH_STACKS;
+
+  const toggle = (stack: string) =>
+    onChange(
+      selected.includes(stack)
+        ? selected.filter((s) => s !== stack)
+        : [...selected, stack],
+    );
+
+  const remove = (stack: string) =>
+    onChange(selected.filter((s) => s !== stack));
+
+  return (
+    <div className="border-border rounded-xl border">
+      {/* 검색창 */}
+      <div className="border-b px-3 py-2.5">
+        <div className="border-border bg-secondary flex items-center gap-2 rounded-lg border px-3 py-2">
+          <Search className="text-muted-foreground size-4 shrink-0" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="기술스택 검색"
+            className="placeholder:text-muted-foreground flex-1 bg-transparent text-sm outline-none"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery('')}
+              className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+            >
+              <X className="size-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 선택된 스택 배지 */}
+      <div className="min-h-10 border-b px-3 py-2.5">
+        {selected.length === 0 ? (
+          <p className="text-muted-foreground text-sm">
+            선택된 기술스택이 없습니다.
+          </p>
+        ) : (
+          <div className="flex flex-wrap gap-1.5">
+            {selected.map((stack) => (
+              <span
+                key={stack}
+                className="bg-primary/10 text-primary inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
+              >
+                {stack}
+                <button
+                  type="button"
+                  onClick={() => remove(stack)}
+                  className="cursor-pointer opacity-60 transition-opacity hover:opacity-100"
+                >
+                  <X className="size-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 스택 목록 */}
+      <div className="max-h-48 overflow-y-auto px-3 py-2.5">
+        {filtered.length === 0 ? (
+          <p className="text-muted-foreground py-4 text-center text-sm">
+            검색 결과가 없습니다
+          </p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {filtered.map((stack) => (
+              <button
+                key={stack}
+                type="button"
+                onClick={() => toggle(stack)}
+                className={cn(
+                  'cursor-pointer rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+                  selected.includes(stack)
+                    ? 'bg-primary/10 text-primary border-transparent'
+                    : 'border-border bg-background text-foreground hover:bg-secondary',
+                )}
+              >
+                {stack}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function RecruitmentForm() {
-  const [state, formAction, isPending] = useActionState(
+  const [state, formAction] = useActionState(
     createRecruitmentAction,
     initialState,
   );
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<CreateRecruitmentInput>({
     resolver: zodResolver(createRecruitmentSchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     defaultValues: {
       title: '',
       summary: '',
       content: '',
       projectType: '',
       roles: [],
-      headcount: 1,
+      headcount: RECRUITMENT_HEADCOUNT_MIN,
       techStacks: [],
       openChatUrl: '',
     },
   });
 
-  const headcount = useWatch({ control: form.control, name: 'headcount' });
-  const headcountLabel =
-    headcount === MAX ? `${headcount}명 이상` : `${headcount}명`;
+  const handleSubmit = form.handleSubmit((data) => {
+    const formData = new FormData();
+    formData.append('title', data.title);
+    if (data.summary) formData.append('summary', data.summary);
+    formData.append('content', data.content);
+    formData.append('projectType', data.projectType);
+    data.roles.forEach((r) => formData.append('roles', r));
+    formData.append('headcount', String(data.headcount));
+    data.techStacks.forEach((s) => formData.append('techStacks', s));
+    formData.append('openChatUrl', data.openChatUrl);
+    startTransition(() => formAction(formData));
+  });
 
   return (
     <Form {...form}>
-      <form action={formAction} className="space-y-8">
-        {/* 서버 에러 메시지 */}
-        {state.message && !state.success && (
-          <p className="text-destructive text-sm">{state.message}</p>
-        )}
-
+      <form onSubmit={handleSubmit} className="space-y-8">
         {/* 제목 */}
         <FormField
           control={form.control}
@@ -105,8 +221,8 @@ export default function RecruitmentForm() {
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="프로젝트를 한 문장으로 소개해주세요 (최대 100자)"
-                  maxLength={100}
+                  placeholder={`프로젝트를 한 문장으로 소개해주세요 (최대 ${RECRUITMENT_SUMMARY_MAX}자)`}
+                  maxLength={RECRUITMENT_SUMMARY_MAX}
                   {...field}
                 />
               </FormControl>
@@ -131,7 +247,7 @@ export default function RecruitmentForm() {
                   className="min-h-48 resize-none"
                 />
               </FormControl>
-              <FormMessage>{state.errors?.content?.[0]}</FormMessage>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -149,8 +265,6 @@ export default function RecruitmentForm() {
                 <FormLabel>
                   모집종류 <span className="text-destructive">*</span>
                 </FormLabel>
-                {/* hidden input — Server Action FormData 전달용 */}
-                <input type="hidden" name="projectType" value={field.value} />
                 <FormControl>
                   <div className="flex flex-wrap gap-2">
                     {RECRUITMENT_TYPE_OPTIONS.map(({ label, value }) => (
@@ -172,7 +286,7 @@ export default function RecruitmentForm() {
                     ))}
                   </div>
                 </FormControl>
-                <FormMessage>{state.errors?.projectType?.[0]}</FormMessage>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -186,10 +300,6 @@ export default function RecruitmentForm() {
                 <FormLabel>
                   모집대상 <span className="text-destructive">*</span>
                 </FormLabel>
-                {/* hidden inputs */}
-                {field.value.map((v) => (
-                  <input key={v} type="hidden" name="roles" value={v} />
-                ))}
                 <FormControl>
                   <div className="flex flex-wrap gap-2">
                     {ROLE_OPTIONS.map(({ label, value }) => {
@@ -219,7 +329,7 @@ export default function RecruitmentForm() {
                     })}
                   </div>
                 </FormControl>
-                <FormMessage>{state.errors?.roles?.[0]}</FormMessage>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -230,30 +340,29 @@ export default function RecruitmentForm() {
             name="headcount"
             render={({ field }) => (
               <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel>
-                    모집인원 <span className="text-destructive">*</span>
-                  </FormLabel>
-                  <span className="text-muted-foreground text-sm">
-                    {headcountLabel}
-                  </span>
-                </div>
-                {/* hidden input */}
-                <input type="hidden" name="headcount" value={field.value} />
+                <FormLabel>
+                  모집인원 <span className="text-destructive">*</span>
+                </FormLabel>
                 <FormControl>
-                  <Slider
-                    min={MIN}
-                    max={MAX}
-                    step={1}
-                    value={[field.value]}
-                    onValueChange={([v]) => field.onChange(v)}
+                  <Input
+                    type="number"
+                    min={RECRUITMENT_HEADCOUNT_MIN}
+                    max={RECRUITMENT_HEADCOUNT_MAX}
+                    placeholder={`${RECRUITMENT_HEADCOUNT_MIN}~${RECRUITMENT_HEADCOUNT_MAX}명`}
+                    className="no-spinner"
+                    {...field}
+                    onChange={(e) => {
+                      const val = e.target.valueAsNumber;
+                      field.onChange(isNaN(val) ? '' : val);
+                    }}
+                    onBlur={(e) => {
+                      if (e.target.value === '')
+                        field.onChange(RECRUITMENT_HEADCOUNT_MIN);
+                      field.onBlur();
+                    }}
                   />
                 </FormControl>
-                <div className="text-muted-foreground flex justify-between text-sm">
-                  <span>{MIN}명</span>
-                  <span>{MAX}명 이상</span>
-                </div>
-                <FormMessage>{state.errors?.headcount?.[0]}</FormMessage>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -268,16 +377,13 @@ export default function RecruitmentForm() {
               <FormLabel>
                 기술스택 <span className="text-destructive">*</span>
               </FormLabel>
-              {field.value.map((v) => (
-                <input key={v} type="hidden" name="techStacks" value={v} />
-              ))}
               <FormControl>
-                <TechStackField
+                <TechStackSelector
                   selected={field.value}
                   onChange={field.onChange}
                 />
               </FormControl>
-              <FormMessage>{state.errors?.techStacks?.[0]}</FormMessage>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -304,6 +410,11 @@ export default function RecruitmentForm() {
           )}
         />
 
+        {/* 서버 에러 메시지 */}
+        {state.message && !state.success && (
+          <p className="text-destructive text-sm">{state.message}</p>
+        )}
+
         <div className="flex justify-end gap-3">
           <button
             type="button"
@@ -314,7 +425,7 @@ export default function RecruitmentForm() {
           </button>
           <button
             type="submit"
-            disabled={isPending}
+            disabled={isPending || !form.formState.isValid}
             className="bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer rounded-lg px-5 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isPending ? '등록 중...' : '모집 등록'}
