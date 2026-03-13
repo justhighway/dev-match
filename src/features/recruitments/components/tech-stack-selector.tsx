@@ -43,14 +43,16 @@ export default function TechStackSelector({
           <Search className="text-muted-foreground size-4 shrink-0" />
           <input
             type="text"
+            aria-label="기술스택 검사"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="기술스택 검색"
-            className="placeholder:text-mute-foregorund flex-1 bg-transparent text-sm"
+            className="placeholder:text-mute-foreground flex-1 bg-transparent text-sm"
           />
           {searchQuery && (
             <button
               type="button"
+              aria-label="검색어 지우기"
               onClick={() => setSearchQuery('')}
               className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
             >
