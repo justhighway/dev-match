@@ -1,22 +1,17 @@
 'use server';
 
-import { createClient } from '@/shared/supabase/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
+import type { ActionState } from '@/shared/types/action-state';
+import { createClient } from '@/shared/supabase/server';
 import {
   RECRUITMENT_HEADCOUNT_MAX,
   RECRUITMENT_HEADCOUNT_MIN,
 } from '../constants/recruitment';
 import { createRecruitmentSchema } from '../schemas/create-recruitment';
 import { createRecruitment } from '../services/create-recruitment';
-
-export interface CreateRecruitmentActionState {
-  success: boolean;
-  message?: string | null;
-  errors?: Record<string, string[] | undefined>;
-}
 
 const formSchema = createRecruitmentSchema.extend({
   headcount: z.coerce
@@ -27,9 +22,9 @@ const formSchema = createRecruitmentSchema.extend({
 });
 
 export async function createRecruitmentAction(
-  prevState: CreateRecruitmentActionState,
+  prevState: ActionState,
   formData: FormData,
-): Promise<CreateRecruitmentActionState> {
+): Promise<ActionState> {
   const supabase = await createClient();
   const {
     data: { user },

@@ -3,9 +3,11 @@ import { recruitmentsTable } from '@/shared/db/schema';
 
 import { CreateRecruitmentInput } from '../schemas/create-recruitment';
 
-export async function createRecruitment(
-  data: CreateRecruitmentInput & { leaderId: string },
-) {
+export interface CreateRecruitmentDto extends CreateRecruitmentInput {
+  leaderId: string;
+}
+
+export async function createRecruitment(data: CreateRecruitmentDto) {
   const [created] = await db
     .insert(recruitmentsTable)
     .values({
