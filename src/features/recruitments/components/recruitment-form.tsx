@@ -75,9 +75,13 @@ export default function RecruitmentForm() {
     if (data.summary) formData.append('summary', data.summary);
     formData.append('content', data.content);
     formData.append('projectType', data.projectType);
-    data.roles.forEach((role) => formData.append('roles', role));
+    data.roles.forEach((role) => {
+      formData.append('roles', role);
+    });
     formData.append('headcount', String(data.headcount));
-    data.techStacks.forEach((stack) => formData.append('techStacks', stack));
+    data.techStacks.forEach((stack) => {
+      formData.append('techStacks', stack);
+    });
     formData.append('openChatUrl', data.openChatUrl);
     startTransition(() => formAction(formData));
   });
