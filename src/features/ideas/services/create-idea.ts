@@ -1,6 +1,11 @@
-import { CreateIdeaDto } from './types';
 import { db } from '@/shared/db';
 import { ideasTable } from '@/shared/db/schema';
+
+export interface CreateIdeaDto {
+  title: string;
+  content: string;
+  authorId: string;
+}
 
 export async function createIdea(data: CreateIdeaDto) {
   const [newIdea] = await db
