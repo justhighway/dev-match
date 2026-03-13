@@ -2,21 +2,20 @@
 
 import { X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
 
-import { type SortValue } from '../constants/filter-options';
-import ConditionFilter from './condition-filter';
-import SortPopover from './sort-popover';
-import TechStackFilter from './tech-stack-filter';
+import type { SortValue } from '../types';
+import ConditionFilter from './filter/condition-filter';
+import SortPopover from './filter/sort-popover';
+import TechStackFilter from './filter/tech-stack-filter';
 
 export default function RecruitmentFilterBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const sort = (searchParams.get('sort') ?? '') as SortValue | '';
-  const types = searchParams.getAll('type');
-  const roles = searchParams.getAll('role');
-  const stacks = searchParams.getAll('stack');
+  const currentSort = (searchParams.get('sort') ?? '') as SortValue | '';
+  const selectedTypes = searchParams.getAll('type');
+  const selectedRoles = searchParams.getAll('role');
+  const selectedStacks = searchParams.getAll('stack');
   const headcountMin = searchParams.get('headcountMin');
   const headcountMax = searchParams.get('headcountMax');
   const headcountValue: [number, number] | null =
@@ -25,28 +24,25 @@ export default function RecruitmentFilterBar() {
       : null;
 
   const hasActiveFilters =
-    types.length > 0 ||
-    roles.length > 0 ||
-    stacks.length > 0 ||
+    selectedTypes.length > 0 ||
+    selectedRoles.length > 0 ||
+    selectedStacks.length > 0 ||
     headcountValue !== null;
 
-  const updateParams = useCallback(
-    (updates: Record<string, string | string[]>) => {
-      const params = new URLSearchParams(searchParams.toString());
+  const updateSearchParams = (updates: Record<string, string | string[]>) => {
+    const params = new URLSearchParams(searchParams.toString());
 
-      for (const [key, value] of Object.entries(updates)) {
-        params.delete(key);
-        if (Array.isArray(value)) {
-          value.forEach((v) => params.append(key, v));
-        } else if (value) {
-          params.set(key, value);
-        }
+    for (const [key, value] of Object.entries(updates)) {
+      params.delete(key);
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, v));
+      } else if (value) {
+        params.set(key, value);
       }
+    }
 
-      router.push(`/recruitments?${params.toString()}`);
-    },
-    [router, searchParams],
-  );
+    router.push(`/recruitments?${params.toString()}`);
+  };
 
   const handleConditionApply = ({
     types: newTypes,
@@ -60,10 +56,10 @@ export default function RecruitmentFilterBar() {
     const params = new URLSearchParams(searchParams.toString());
 
     params.delete('type');
-    newTypes.forEach((v) => params.append('type', v));
+    newTypes.forEach((type) => params.append('type', type));
 
     params.delete('role');
-    newRoles.forEach((v) => params.append('role', v));
+    newRoles.forEach((role) => params.append('role', role));
 
     params.delete('headcountMin');
     params.delete('headcountMax');
@@ -76,41 +72,42 @@ export default function RecruitmentFilterBar() {
   };
 
   const handleStacksApply = (newStacks: string[]) => {
-    updateParams({ stack: newStacks });
+    updateSearchParams({ stack: newStacks });
   };
 
-  const clearAll = () => {
+  const handleSortChange = (newSort: SortValue | '') => {
+    updateSearchParams({ sort: newSort });
+  };
+
+  const handleClearAllFilters = () => {
     const params = new URLSearchParams();
-    if (sort) params.set('sort', sort);
+    if (currentSort) params.set('sort', currentSort);
     if (searchParams.get('onlyOpen')) params.set('onlyOpen', 'true');
     router.push(`/recruitments?${params.toString()}`);
   };
 
   return (
     <div className="no-scrollbar flex flex-nowrap items-center gap-2 overflow-x-auto pb-0.5 md:flex-wrap">
-      <SortPopover
-        value={sort}
-        onChange={(value) => updateParams({ sort: value })}
-      />
+      <SortPopover value={currentSort} onChange={handleSortChange} />
 
       <div className="bg-border mx-1 h-5 w-px shrink-0" />
 
       <ConditionFilter
-        types={types}
-        roles={roles}
+        types={selectedTypes}
+        roles={selectedRoles}
         headcountValue={headcountValue}
         onApply={handleConditionApply}
       />
 
-      <TechStackFilter selected={stacks} onApply={handleStacksApply} />
+      <TechStackFilter selected={selectedStacks} onApply={handleStacksApply} />
 
       {hasActiveFilters && (
         <button
           type="button"
-          onClick={clearAll}
+          onClick={handleClearAllFilters}
           className="text-muted-foreground hover:text-foreground flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors"
         >
-          <X className="size-3.5" />
+          <X className="size-3.5" aria-hidden />
           초기화
         </button>
       )}

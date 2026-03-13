@@ -2,7 +2,7 @@ import { db } from '@/shared/db';
 import { recruitmentsTable, usersTable } from '@/shared/db/schema';
 import { and, arrayOverlaps, desc, eq, gte, lte, sql } from 'drizzle-orm';
 
-import type { SortValue } from '../constants/filter-options';
+import type { SortValue } from '../types';
 
 const SELECTED_FIELDS = {
   id: recruitmentsTable.id,
@@ -33,12 +33,9 @@ export async function getFeaturedRecruitments(limit = 6) {
     .limit(limit);
 }
 
-export type FeaturedRecruitment = Awaited<
-  ReturnType<typeof getFeaturedRecruitments>
->[number];
-
 export interface RecruitmentsFilter {
   onlyOpen?: boolean;
+  // TODO: sort 구현 필요 (현재 createdAt desc 고정)
   sort?: SortValue;
   types?: string[];
   roles?: string[];
@@ -89,4 +86,6 @@ export async function getRecruitments(filter: RecruitmentsFilter = {}) {
   return query;
 }
 
-export type Recruitment = Awaited<ReturnType<typeof getRecruitments>>[number];
+export type Recruitment = Awaited<
+  ReturnType<typeof getFeaturedRecruitments | typeof getRecruitments>
+>[number];

@@ -1,14 +1,14 @@
 'use client';
 
 import { Search, X } from 'lucide-react';
+import { useState } from 'react';
 
 import { ALL_TECH_STACKS } from '../constants/filter-options';
-import { cn } from '@/shared/lib/utils';
-import { useState } from 'react';
+import { cn, toggleInArray } from '@/shared/lib/utils';
 
 interface TechStackSelectorProps {
   selectedStacks: string[];
-  onStacksChange: (values: string[]) => void;
+  onStacksChange: (updatedStacks: string[]) => void;
 }
 
 export default function TechStackSelector({
@@ -18,20 +18,16 @@ export default function TechStackSelector({
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredStacks = searchQuery.trim()
-    ? ALL_TECH_STACKS.filter((s) =>
-        s.toLowerCase().includes(searchQuery.trim().toLowerCase()),
+    ? ALL_TECH_STACKS.filter((stack) =>
+        stack.toLowerCase().includes(searchQuery.trim().toLowerCase()),
       )
     : ALL_TECH_STACKS;
 
-  const toggleStack = (stack: string) => {
-    onStacksChange(
-      selectedStacks.includes(stack)
-        ? selectedStacks.filter((s) => s !== stack)
-        : [...selectedStacks, stack],
-    );
+  const handleStackToggle = (stack: string) => {
+    onStacksChange(toggleInArray(selectedStacks, stack));
   };
 
-  const removeStack = (stack: string) => {
+  const handleStackRemove = (stack: string) => {
     onStacksChange(selectedStacks.filter((s) => s !== stack));
   };
 
@@ -40,14 +36,17 @@ export default function TechStackSelector({
       {/* 검색창 */}
       <div className="border-b px-3 py-2.5">
         <div className="border-border flex items-center gap-2 rounded-lg border px-3 py-2">
-          <Search className="text-muted-foreground size-4 shrink-0" />
+          <Search
+            className="text-muted-foreground size-4 shrink-0"
+            aria-hidden
+          />
           <input
             type="text"
-            aria-label="기술스택 검사"
+            aria-label="기술스택 검색"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="기술스택 검색"
-            className="placeholder:text-mute-foreground flex-1 bg-transparent text-sm"
+            className="placeholder:text-muted-foreground flex-1 bg-transparent text-sm outline-none"
           />
           {searchQuery && (
             <button
@@ -56,7 +55,7 @@ export default function TechStackSelector({
               onClick={() => setSearchQuery('')}
               className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
             >
-              <X className="size-3.5" />
+              <X className="size-3.5" aria-hidden />
             </button>
           )}
         </div>
@@ -69,7 +68,7 @@ export default function TechStackSelector({
             선택된 기술스택이 없습니다.
           </p>
         ) : (
-          <ul>
+          <ul className="flex flex-wrap gap-1.5">
             {selectedStacks.map((stack) => (
               <li
                 key={stack}
@@ -79,10 +78,10 @@ export default function TechStackSelector({
                 <button
                   type="button"
                   aria-label={`${stack} 제거`}
-                  onClick={() => removeStack(stack)}
+                  onClick={() => handleStackRemove(stack)}
                   className="cursor-pointer opacity-60 transition-opacity hover:opacity-100"
                 >
-                  <X className="size-3" />
+                  <X className="size-3" aria-hidden />
                 </button>
               </li>
             ))}
@@ -91,16 +90,18 @@ export default function TechStackSelector({
       </div>
 
       {/* 스택 목록 */}
-      <div>
+      <div className="p-3">
         {filteredStacks.length === 0 ? (
-          <p>검색 결과가 없습니다.</p>
+          <p className="text-muted-foreground py-4 text-center text-sm">
+            검색 결과가 없습니다.
+          </p>
         ) : (
-          <ul>
+          <ul className="flex flex-wrap gap-1.5">
             {filteredStacks.map((stack) => (
               <li key={stack}>
                 <button
                   type="button"
-                  onClick={() => toggleStack(stack)}
+                  onClick={() => handleStackToggle(stack)}
                   aria-pressed={selectedStacks.includes(stack)}
                   className={cn(
                     'cursor-pointer rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
