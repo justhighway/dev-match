@@ -8,7 +8,8 @@ import {
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 
-import { SORT_OPTIONS, type SortValue } from '../constants/filter-options';
+import { SORT_OPTIONS } from '../../constants/filter-options';
+import type { SortValue } from '../../types';
 
 interface SortPopoverProps {
   value: SortValue | '';
