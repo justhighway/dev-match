@@ -12,8 +12,7 @@ import { Input } from '@/shared/components/ui/input';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { cn } from '@/shared/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Search, X } from 'lucide-react';
-import { useActionState, useState, useTransition } from 'react';
+import { useActionState, useEffect, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useScrollDirection } from '@/shared/hooks/use-scroll-direction';
@@ -23,7 +22,6 @@ import {
   type CreateRecruitmentActionState,
 } from '../actions/create-recruitment';
 import {
-  ALL_TECH_STACKS,
   RECRUITMENT_TYPE_OPTIONS,
   ROLE_OPTIONS,
 } from '../constants/filter-options';
@@ -38,6 +36,7 @@ import {
   type CreateRecruitmentInput,
 } from '../schemas/create-recruitment';
 import { Button } from '@/shared/components/ui/button';
+import TechStackSelector from './tech-stack-selector';
 
 const initialState: CreateRecruitmentActionState = {
   success: false,
@@ -45,117 +44,10 @@ const initialState: CreateRecruitmentActionState = {
   errors: {},
 };
 
-function TechStackSelector({
-  selected,
-  onChange,
-}: {
-  selected: string[];
-  onChange: (values: string[]) => void;
-}) {
-  const [query, setQuery] = useState('');
-
-  const filtered = query.trim()
-    ? ALL_TECH_STACKS.filter((s) =>
-        s.toLowerCase().includes(query.trim().toLowerCase()),
-      )
-    : ALL_TECH_STACKS;
-
-  const toggle = (stack: string) =>
-    onChange(
-      selected.includes(stack)
-        ? selected.filter((s) => s !== stack)
-        : [...selected, stack],
-    );
-
-  const remove = (stack: string) =>
-    onChange(selected.filter((s) => s !== stack));
-
-  return (
-    <div className="border-border rounded-xl border">
-      {/* 검색창 */}
-      <div className="border-b px-3 py-2.5">
-        <div className="border-border flex items-center gap-2 rounded-lg border px-3 py-2">
-          <Search className="text-muted-foreground size-4 shrink-0" />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="기술스택 검색"
-            className="placeholder:text-muted-foreground flex-1 bg-transparent text-sm outline-none"
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => setQuery('')}
-              className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
-            >
-              <X className="size-3.5" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* 선택된 스택 배지 */}
-      <div className="min-h-10 border-b px-3 py-2.5">
-        {selected.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            선택된 기술스택이 없습니다.
-          </p>
-        ) : (
-          <div className="flex flex-wrap gap-1.5">
-            {selected.map((stack) => (
-              <span
-                key={stack}
-                className="bg-primary/10 text-primary inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
-              >
-                {stack}
-                <button
-                  type="button"
-                  onClick={() => remove(stack)}
-                  className="cursor-pointer opacity-60 transition-opacity hover:opacity-100"
-                >
-                  <X className="size-3" />
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* 스택 목록 */}
-      <div className="max-h-48 overflow-y-auto px-3 py-2.5">
-        {filtered.length === 0 ? (
-          <p className="text-muted-foreground py-4 text-center text-sm">
-            검색 결과가 없습니다
-          </p>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {filtered.map((stack) => (
-              <button
-                key={stack}
-                type="button"
-                onClick={() => toggle(stack)}
-                className={cn(
-                  'cursor-pointer rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
-                  selected.includes(stack)
-                    ? 'bg-primary/10 text-primary border-transparent'
-                    : 'border-border bg-background text-foreground hover:bg-secondary',
-                )}
-              >
-                {stack}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function RecruitmentForm() {
   const isScrollingUp = useScrollDirection();
 
-  const [state, formAction] = useActionState(
+  const [actionState, formAction] = useActionState(
     createRecruitmentAction,
     initialState,
   );
@@ -183,12 +75,27 @@ export default function RecruitmentForm() {
     if (data.summary) formData.append('summary', data.summary);
     formData.append('content', data.content);
     formData.append('projectType', data.projectType);
-    data.roles.forEach((r) => formData.append('roles', r));
+    data.roles.forEach((role) => formData.append('roles', role));
     formData.append('headcount', String(data.headcount));
-    data.techStacks.forEach((s) => formData.append('techStacks', s));
+    data.techStacks.forEach((stack) => formData.append('techStacks', stack));
     formData.append('openChatUrl', data.openChatUrl);
     startTransition(() => formAction(formData));
   });
+
+  useEffect(() => {
+    if (actionState.success || !actionState.errors) return;
+
+    (
+      Object.entries(actionState.errors) as [
+        keyof CreateRecruitmentInput,
+        string[] | undefined,
+      ][]
+    ).forEach(([fieldName, errorMessages]) => {
+      if (errorMessages?.[0]) {
+        form.setError(fieldName, { type: 'server', message: errorMessages[0] });
+      }
+    });
+  }, [actionState, form]);
 
   return (
     <Form {...form}>
@@ -383,7 +290,7 @@ export default function RecruitmentForm() {
                     {...field}
                     onChange={(e) => {
                       const val = e.target.valueAsNumber;
-                      field.onChange(isNaN(val) ? '' : val);
+                      field.onChange(isNaN(val) ? undefined : val);
                     }}
                     onBlur={(e) => {
                       if (e.target.value === '')
@@ -409,8 +316,8 @@ export default function RecruitmentForm() {
               </FormLabel>
               <FormControl>
                 <TechStackSelector
-                  selected={field.value}
-                  onChange={field.onChange}
+                  selectedStacks={field.value}
+                  onStacksChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />
@@ -444,10 +351,14 @@ export default function RecruitmentForm() {
           )}
         />
 
-        {/* 서버 에러 메시지 */}
-        {state.message && !state.success && (
-          <p className="text-destructive text-sm">{state.message}</p>
-        )}
+        {/* 서버 에러 메시지 (필드별 에러가 없는 경우 — DB/인증 오류) */}
+        {actionState.message &&
+          !actionState.success &&
+          !Object.keys(actionState.errors ?? {}).length && (
+            <p role="alert" className="text-destructive text-sm">
+              {actionState.message}
+            </p>
+          )}
 
         {/* floating 제출 버튼 */}
         <div

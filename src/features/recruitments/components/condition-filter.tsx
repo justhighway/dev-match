@@ -19,6 +19,11 @@ import FilterPanel, { FilterFooter } from './filter-panel';
 const MIN = RECRUITMENT_HEADCOUNT_MIN;
 const MAX = RECRUITMENT_HEADCOUNT_MAX;
 
+const normalizeHeadcount = (
+  range: [number, number],
+): [number, number] | null =>
+  range[0] === MIN && range[1] === MAX ? null : range;
+
 interface ConditionFilterProps {
   types: string[];
   roles: string[];
@@ -161,9 +166,7 @@ export default function ConditionFilter({
   const localActiveCount = getActiveCount(
     localTypes,
     localRoles,
-    localHeadcount[0] === MIN && localHeadcount[1] === MAX
-      ? null
-      : localHeadcount,
+    normalizeHeadcount(localHeadcount),
   );
 
   const handleOpen = (nextOpen: boolean) => {
@@ -192,14 +195,10 @@ export default function ConditionFilter({
   };
 
   const handleApply = () => {
-    const headcount =
-      localHeadcount[0] === MIN && localHeadcount[1] === MAX
-        ? null
-        : localHeadcount;
     onApply({
       types: localTypes,
       roles: localRoles,
-      headcountValue: headcount,
+      headcountValue: normalizeHeadcount(localHeadcount),
     });
     setOpen(false);
   };

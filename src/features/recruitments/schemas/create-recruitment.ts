@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 import {
   ALL_TECH_STACKS,
   RECRUITMENT_TYPE_OPTIONS,
@@ -13,6 +11,8 @@ import {
   RECRUITMENT_TITLE_MAX,
   RECRUITMENT_TITLE_MIN,
 } from '../constants/recruitment';
+
+import { z } from 'zod';
 
 const VALID_TYPES = RECRUITMENT_TYPE_OPTIONS.map((o) => o.value);
 const VALID_ROLES = ROLE_OPTIONS.map((o) => o.value);
