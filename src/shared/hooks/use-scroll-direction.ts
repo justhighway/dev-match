@@ -13,6 +13,7 @@ export function useScrollDirection() {
       lastY.current = currentY;
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
