@@ -106,6 +106,7 @@ export default function RecruitmentFilterBar() {
 
       {hasActiveFilters && (
         <button
+          type="button"
           onClick={clearAll}
           className="text-muted-foreground hover:text-foreground flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-colors"
         >

@@ -53,6 +53,7 @@ export default function FilterPopover({
     <Popover>
       <PopoverTrigger asChild>
         <button
+          type="button"
           className={cn(
             'flex w-fit cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
             isActive
@@ -71,6 +72,7 @@ export default function FilterPopover({
           <span className="text-sm font-semibold">{label}</span>
           {isActive && (
             <button
+              type="button"
               onClick={() => onChange([])}
               className="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors"
             >
@@ -81,8 +83,12 @@ export default function FilterPopover({
         <ul className="flex flex-col gap-0.5">
           {options.map(({ label: optLabel, value }) => (
             <li key={value}>
-              <label className="hover:bg-secondary flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-2 text-sm">
+              <label
+                htmlFor={`filter-${value}`}
+                className="hover:bg-secondary flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-2 text-sm"
+              >
                 <Checkbox
+                  id={`filter-${value}`}
                   checked={selected.includes(value)}
                   onCheckedChange={() => toggle(value)}
                 />
