@@ -3,14 +3,14 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/shared/components/ui/avatar';
+import { Bookmark, Eye, Heart } from 'lucide-react';
+
+import Link from 'next/link';
+import type { PostCardProps } from '@/shared/types/post-card';
 import TagList from '@/shared/components/ui/tag-list';
 import { cn } from '@/shared/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Bookmark, Eye, Heart } from 'lucide-react';
-import Link from 'next/link';
-
-import type { PostCardProps } from '@/shared/types/post-card';
 
 export default function PostCard({
   title,
@@ -79,15 +79,24 @@ export default function PostCard({
             })}
           </span>
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">
+            <span
+              className="flex items-center gap-1"
+              aria-label={`좋아요 ${likeCount}개`}
+            >
               <Heart className="size-3.5" aria-hidden />
               {likeCount}
             </span>
-            <span className="flex items-center gap-1">
+            <span
+              className="flex items-center gap-1"
+              aria-label={`북마크 ${bookmarkCount}개`}
+            >
               <Bookmark className="size-3.5" aria-hidden />
               {bookmarkCount}
             </span>
-            <span className="flex items-center gap-1">
+            <span
+              className="flex items-center gap-1"
+              aria-label={`조회수 ${viewCount}회`}
+            >
               <Eye className="size-3.5" aria-hidden />
               {viewCount}
             </span>
