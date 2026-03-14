@@ -1,8 +1,8 @@
-import { db } from '@/shared/db';
-import { recruitmentsTable, usersTable } from '@/shared/db/schema';
 import { and, arrayOverlaps, desc, eq, gte, lte, sql } from 'drizzle-orm';
+import { recruitmentsTable, usersTable } from '@/shared/db/schema';
 
 import type { SortValue } from '../types';
+import { db } from '@/shared/db';
 
 const SELECTED_FIELDS = {
   id: recruitmentsTable.id,
@@ -86,6 +86,4 @@ export async function getRecruitments(filter: RecruitmentsFilter = {}) {
   return query;
 }
 
-export type Recruitment = Awaited<
-  ReturnType<typeof getFeaturedRecruitments | typeof getRecruitments>
->[number];
+export type Recruitment = Awaited<ReturnType<typeof getRecruitments>>[number];
