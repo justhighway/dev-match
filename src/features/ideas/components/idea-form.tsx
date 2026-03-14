@@ -42,6 +42,8 @@ export default function IdeaForm() {
     },
   });
 
+  const { setError } = form;
+
   useEffect(() => {
     if (actionState.success || !actionState.errors) return;
 
@@ -52,10 +54,10 @@ export default function IdeaForm() {
       ][]
     ).forEach(([fieldName, errorMessages]) => {
       if (errorMessages?.[0]) {
-        form.setError(fieldName, { type: 'server', message: errorMessages[0] });
+        setError(fieldName, { type: 'server', message: errorMessages[0] });
       }
     });
-  }, [actionState, form]);
+  }, [actionState, setError]);
 
   return (
     <Form {...form}>
