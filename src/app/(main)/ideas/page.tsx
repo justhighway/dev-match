@@ -1,10 +1,10 @@
-import IdeaCard from '@/features/ideas/components/idea-card';
-import { getIdeas } from '@/features/ideas/services/get-ideas';
-import Container from '@/shared/components/layout/container';
 import { Button } from '@/shared/components/ui/button';
+import Container from '@/shared/components/layout/container';
 import EmptyState from '@/shared/components/ui/empty-state';
-import { Plus } from 'lucide-react';
+import IdeaCard from '@/features/ideas/components/idea-card';
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { getIdeas } from '@/features/ideas/services/get-ideas';
 
 export default async function IdeasPage() {
   const ideas = await getIdeas();
