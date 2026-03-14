@@ -55,8 +55,7 @@ export default function CarouselSection({
   const scrollCarousel = (direction: 'left' | 'right') => {
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer) return;
-    const cardWidth =
-      scrollContainer.querySelector(':first-child')?.clientWidth ?? 300;
+    const cardWidth = scrollContainer.firstElementChild?.clientWidth ?? 300;
     scrollContainer.scrollBy({
       left: direction === 'left' ? -cardWidth : cardWidth,
       behavior: 'smooth',
