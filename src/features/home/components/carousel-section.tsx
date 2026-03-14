@@ -18,6 +18,9 @@ const ARROW_BUTTON_CLASS = cn(
   'disabled:cursor-not-allowed disabled:opacity-40 disabled:text-muted-foreground',
 );
 
+const SCROLL_THRESHOLD = 8;
+const FALLBACK_CARD_WIDTH = 300;
+
 export default function CarouselSection({
   title,
   href,
@@ -32,10 +35,10 @@ export default function CarouselSection({
     if (!scrollContainer) return;
 
     const updateScrollButtonState = () => {
-      setCanScrollLeft(scrollContainer.scrollLeft > 8);
+      setCanScrollLeft(scrollContainer.scrollLeft > SCROLL_THRESHOLD);
       setCanScrollRight(
         scrollContainer.scrollLeft + scrollContainer.clientWidth <
-          scrollContainer.scrollWidth - 8,
+          scrollContainer.scrollWidth - SCROLL_THRESHOLD,
       );
     };
 
@@ -55,7 +58,8 @@ export default function CarouselSection({
   const scrollCarousel = (direction: 'left' | 'right') => {
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer) return;
-    const cardWidth = scrollContainer.firstElementChild?.clientWidth ?? 300;
+    const cardWidth =
+      scrollContainer.firstElementChild?.clientWidth ?? FALLBACK_CARD_WIDTH;
     scrollContainer.scrollBy({
       left: direction === 'left' ? -cardWidth : cardWidth,
       behavior: 'smooth',
