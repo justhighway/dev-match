@@ -1,16 +1,16 @@
 'use client';
 
-import { Slider } from '@/shared/components/ui/slider';
-import { cn } from '@/shared/lib/utils';
-
-import {
-  RECRUITMENT_TYPE_OPTIONS,
-  ROLE_OPTIONS,
-} from '../../constants/filter-options';
 import {
   RECRUITMENT_HEADCOUNT_MAX,
   RECRUITMENT_HEADCOUNT_MIN,
 } from '../../constants/recruitment';
+import {
+  RECRUITMENT_TYPE_OPTIONS,
+  ROLE_OPTIONS,
+} from '../../constants/filter-options';
+
+import { Slider } from '@/shared/components/ui/slider';
+import { cn } from '@/shared/lib/utils';
 
 const MIN = RECRUITMENT_HEADCOUNT_MIN;
 const MAX = RECRUITMENT_HEADCOUNT_MAX;
@@ -47,7 +47,7 @@ interface ConditionContentProps {
   headcountRange: [number, number];
   onTypeToggle: (value: string) => void;
   onRoleToggle: (value: string) => void;
-  onHeadcountRangeChange: (range: number[]) => void;
+  onHeadcountRangeChange: (range: [number, number]) => void;
 }
 
 export default function ConditionContent({
@@ -105,7 +105,11 @@ export default function ConditionContent({
           max={MAX}
           step={1}
           value={headcountRange}
-          onValueChange={onHeadcountRangeChange}
+          onValueChange={(range) => {
+            if (range.length === 2) {
+              onHeadcountRangeChange([range[0], range[1]]);
+            }
+          }}
           className="mb-4"
         />
         <div className="text-muted-foreground flex justify-between text-sm">
