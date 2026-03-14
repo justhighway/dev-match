@@ -7,21 +7,20 @@ import {
   FormLabel,
   FormMessage,
 } from '@/shared/components/ui/form';
-import { Input } from '@/shared/components/ui/input';
-import { cn } from '@/shared/lib/utils';
-import { toggleInArray } from '@/shared/lib/utils';
-import type { UseFormReturn } from 'react-hook-form';
-
-import {
-  RECRUITMENT_TYPE_OPTIONS,
-  ROLE_OPTIONS,
-} from '../constants/filter-options';
 import {
   RECRUITMENT_HEADCOUNT_MAX,
   RECRUITMENT_HEADCOUNT_MIN,
 } from '../constants/recruitment';
+import {
+  RECRUITMENT_TYPE_OPTIONS,
+  ROLE_OPTIONS,
+} from '../constants/filter-options';
+import { cn, toggleInArray } from '@/shared/lib/utils';
+
 import type { CreateRecruitmentInput } from '../schemas/create-recruitment';
+import { Input } from '@/shared/components/ui/input';
 import TechStackSelector from './tech-stack-selector';
+import type { UseFormReturn } from 'react-hook-form';
 
 interface RecruitmentConditionFieldsProps {
   form: UseFormReturn<CreateRecruitmentInput>;

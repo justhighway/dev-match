@@ -1,10 +1,10 @@
 'use client';
 
 import { Search, X } from 'lucide-react';
-import { useState } from 'react';
+import { cn, toggleInArray } from '@/shared/lib/utils';
 
 import { ALL_TECH_STACKS } from '../constants/filter-options';
-import { cn, toggleInArray } from '@/shared/lib/utils';
+import { useState } from 'react';
 
 interface TechStackSelectorProps {
   selectedStacks: string[];
@@ -46,7 +46,7 @@ export default function TechStackSelector({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="기술스택 검색"
-            className="placeholder:text-muted-foreground flex-1 bg-transparent text-sm outline-none"
+            className="placeholder:text-muted-foreground focus-visible:ring-primary/40 flex-1 bg-transparent text-sm outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
           />
           {searchQuery && (
             <button
