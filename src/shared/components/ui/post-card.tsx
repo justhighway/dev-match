@@ -79,25 +79,19 @@ export default function PostCard({
             })}
           </span>
           <div className="flex items-center gap-3">
-            <span
-              className="flex items-center gap-1"
-              aria-label={`좋아요 ${likeCount}개`}
-            >
+            <span className="flex items-center gap-1">
               <Heart className="size-3.5" aria-hidden />
+              <span className="sr-only">좋아요</span>
               {likeCount}
             </span>
-            <span
-              className="flex items-center gap-1"
-              aria-label={`북마크 ${bookmarkCount}개`}
-            >
+            <span className="flex items-center gap-1">
               <Bookmark className="size-3.5" aria-hidden />
+              <span className="sr-only">북마크</span>
               {bookmarkCount}
             </span>
-            <span
-              className="flex items-center gap-1"
-              aria-label={`조회수 ${viewCount}회`}
-            >
+            <span className="flex items-center gap-1">
               <Eye className="size-3.5" aria-hidden />
+              <span className="sr-only">조회수</span>
               {viewCount}
             </span>
           </div>
