@@ -60,7 +60,7 @@ export default function ConditionContent({
 }: ConditionContentProps) {
   const rangeLabel =
     headcountRange[1] === MAX
-      ? `${headcountRange[0]}~${headcountRange[1]}명 이상`
+      ? `${headcountRange[0]}명 이상`
       : `${headcountRange[0]}~${headcountRange[1]}명`;
 
   return (

@@ -132,6 +132,7 @@ export default function RecruitmentConditionFields({
               <Input
                 id="headcount-input"
                 type="number"
+                disabled={isPending}
                 min={RECRUITMENT_HEADCOUNT_MIN}
                 max={RECRUITMENT_HEADCOUNT_MAX}
                 placeholder={`${RECRUITMENT_HEADCOUNT_MIN}~${RECRUITMENT_HEADCOUNT_MAX}명`}
@@ -165,7 +166,9 @@ export default function RecruitmentConditionFields({
             <FormControl>
               <TechStackSelector
                 selectedStacks={field.value}
-                onStacksChange={field.onChange}
+                onStacksChange={(stacks) => {
+                  if (!isPending) field.onChange(stacks);
+                }}
               />
             </FormControl>
             <FormMessage />

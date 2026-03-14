@@ -40,7 +40,7 @@ export default function TechStackContent({
             value={searchQuery}
             onChange={(e) => onSearchQueryChange(e.target.value)}
             placeholder="기술스택 검색"
-            className="placeholder:text-muted-foreground flex-1 bg-transparent text-sm outline-none"
+            className="placeholder:text-muted-foreground focus-visible:ring-primary/40 flex-1 bg-transparent text-sm outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
           />
           {searchQuery && (
             <button
@@ -55,7 +55,7 @@ export default function TechStackContent({
         </div>
       </div>
 
-      <div className="max-h-70 overflow-y-auto px-4 py-6">
+      <div className="max-h-64 overflow-y-auto px-4 py-6">
         {filteredStacks.length === 0 ? (
           <p className="text-muted-foreground py-8 text-center text-sm">
             검색 결과가 없습니다
