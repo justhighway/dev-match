@@ -2,9 +2,8 @@
 
 import { Search, X } from 'lucide-react';
 
-import { cn } from '@/shared/lib/utils';
-
 import { ALL_TECH_STACKS } from '../../constants/filter-options';
+import { cn } from '@/shared/lib/utils';
 
 interface TechStackContentProps {
   selectedStacks: string[];
@@ -85,9 +84,9 @@ export default function TechStackContent({
       </div>
 
       <div className="border-t px-4 py-3">
-        <div className="flex max-h-17 min-h-17 flex-wrap content-start gap-1.5 overflow-y-auto">
+        <div className="flex max-h-16 min-h-16 flex-wrap content-start gap-1.5 overflow-y-auto">
           {selectedStacks.length === 0 ? (
-            <span className="text-muted-foreground flex min-h-17 w-full items-center justify-center text-sm">
+            <span className="text-muted-foreground flex min-h-16 w-full items-center justify-center text-sm">
               기술 스택을 선택해주세요.
             </span>
           ) : (
