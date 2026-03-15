@@ -15,18 +15,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useActionState, useEffect, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 
+import type { ActionState } from '@/shared/types/action-state';
+import { Button } from '@/shared/components/ui/button';
 import { useScrollDirection } from '@/shared/hooks/use-scroll-direction';
 
+import { createRecruitmentAction } from '../actions/create-recruitment';
 import {
-  createRecruitmentAction,
-  type CreateRecruitmentActionState,
-} from '../actions/create-recruitment';
-import {
-  RECRUITMENT_TYPE_OPTIONS,
-  ROLE_OPTIONS,
-} from '../constants/filter-options';
-import {
-  RECRUITMENT_HEADCOUNT_MAX,
   RECRUITMENT_HEADCOUNT_MIN,
   RECRUITMENT_SUMMARY_MAX,
   RECRUITMENT_TITLE_MAX,
@@ -35,10 +29,9 @@ import {
   createRecruitmentSchema,
   type CreateRecruitmentInput,
 } from '../schemas/create-recruitment';
-import { Button } from '@/shared/components/ui/button';
-import TechStackSelector from './tech-stack-selector';
+import RecruitmentConditionFields from './recruitment-condition-fields';
 
-const initialState: CreateRecruitmentActionState = {
+const initialState: ActionState = {
   success: false,
   message: null,
   errors: {},
@@ -69,19 +62,15 @@ export default function RecruitmentForm() {
     },
   });
 
-  const handleSubmit = form.handleSubmit((data) => {
+  const handleRecruitmentFormSubmit = form.handleSubmit((data) => {
     const formData = new FormData();
     formData.append('title', data.title);
     if (data.summary) formData.append('summary', data.summary);
     formData.append('content', data.content);
     formData.append('projectType', data.projectType);
-    data.roles.forEach((role) => {
-      formData.append('roles', role);
-    });
+    data.roles.forEach((role) => formData.append('roles', role));
     formData.append('headcount', String(data.headcount));
-    data.techStacks.forEach((stack) => {
-      formData.append('techStacks', stack);
-    });
+    data.techStacks.forEach((stack) => formData.append('techStacks', stack));
     formData.append('openChatUrl', data.openChatUrl);
     startTransition(() => formAction(formData));
   });
@@ -94,16 +83,16 @@ export default function RecruitmentForm() {
         keyof CreateRecruitmentInput,
         string[] | undefined,
       ][]
-    ).forEach(([fieldName, errorMessages]) => {
-      if (errorMessages?.[0]) {
-        form.setError(fieldName, { type: 'server', message: errorMessages[0] });
+    ).forEach(([fieldName, serverErrors]) => {
+      if (serverErrors?.[0]) {
+        form.setError(fieldName, { type: 'server', message: serverErrors[0] });
       }
     });
   }, [actionState, form]);
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleRecruitmentFormSubmit} className="space-y-6">
         {/* 제목 */}
         <FormField
           control={form.control}
@@ -118,8 +107,8 @@ export default function RecruitmentForm() {
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder={`프로젝트 팀원 모집 제목을 입력해주세요 (최대 ${RECRUITMENT_TITLE_MAX}자)`}
                   id="title-input"
+                  placeholder={`프로젝트 팀원 모집 제목을 입력해주세요 (최대 ${RECRUITMENT_TITLE_MAX}자)`}
                   {...field}
                 />
               </FormControl>
@@ -145,6 +134,7 @@ export default function RecruitmentForm() {
               </FormLabel>
               <FormControl>
                 <Input
+                  id="intro-input"
                   placeholder={`프로젝트를 한 문장으로 소개해주세요 (최대 ${RECRUITMENT_SUMMARY_MAX}자)`}
                   maxLength={RECRUITMENT_SUMMARY_MAX}
                   {...field}
@@ -180,154 +170,8 @@ export default function RecruitmentForm() {
           )}
         />
 
-        {/* 모집조건 묶음 */}
-        <fieldset className="space-y-8">
-          {/* 모집종류 */}
-          <FormField
-            control={form.control}
-            name="projectType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel
-                  htmlFor="type-option-selector"
-                  className="text-base font-semibold"
-                >
-                  모집종류 <span className="text-destructive">*</span>
-                </FormLabel>
-                <p className="text-muted-foreground -mt-1.5 mb-1 text-sm">
-                  프로젝트의 종류를 선택해주세요.
-                </p>
-                <FormControl>
-                  <div className="flex flex-wrap gap-2">
-                    {RECRUITMENT_TYPE_OPTIONS.map(({ label, value }) => (
-                      <button
-                        key={value}
-                        type="button"
-                        aria-pressed={field.value === value}
-                        disabled={isPending}
-                        onClick={() => field.onChange(value)}
-                        className={cn(
-                          'cursor-pointer rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
-                          field.value === value
-                            ? 'bg-primary/10 text-primary border-transparent'
-                            : 'border-border bg-background text-foreground hover:bg-secondary',
-                        )}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* 모집대상 */}
-          <FormField
-            control={form.control}
-            name="roles"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel
-                  htmlFor="role-options-selector"
-                  className="text-base font-semibold"
-                >
-                  모집대상 <span className="text-destructive">*</span>
-                </FormLabel>
-                <p className="text-muted-foreground -mt-1.5 mb-1 text-sm">
-                  프로젝트의 종류를 선택해주세요.
-                </p>
-                <FormControl>
-                  <div className="flex flex-wrap gap-2">
-                    {ROLE_OPTIONS.map(({ label, value }) => {
-                      const selected = field.value.includes(value);
-                      return (
-                        <button
-                          key={value}
-                          type="button"
-                          aria-pressed={selected}
-                          disabled={isPending}
-                          onClick={() => {
-                            const next = selected
-                              ? field.value.filter((v) => v !== value)
-                              : [...field.value, value];
-                            field.onChange(next);
-                          }}
-                          className={cn(
-                            'cursor-pointer rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
-                            selected
-                              ? 'bg-primary/10 text-primary border-transparent'
-                              : 'border-border bg-background text-foreground hover:bg-secondary',
-                          )}
-                        >
-                          {label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* 모집인원 */}
-          <FormField
-            control={form.control}
-            name="headcount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel
-                  htmlFor="headcount-input"
-                  className="text-base font-semibold"
-                >
-                  모집인원 <span className="text-destructive">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min={RECRUITMENT_HEADCOUNT_MIN}
-                    max={RECRUITMENT_HEADCOUNT_MAX}
-                    placeholder={`${RECRUITMENT_HEADCOUNT_MIN}~${RECRUITMENT_HEADCOUNT_MAX}명`}
-                    className="no-spinner"
-                    {...field}
-                    onChange={(e) => {
-                      const val = e.target.valueAsNumber;
-                      field.onChange(isNaN(val) ? undefined : val);
-                    }}
-                    onBlur={(e) => {
-                      if (e.target.value === '')
-                        field.onChange(RECRUITMENT_HEADCOUNT_MIN);
-                      field.onBlur();
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </fieldset>
-
-        {/* 기술스택 */}
-        <FormField
-          control={form.control}
-          name="techStacks"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-base font-semibold">
-                기술스택 <span className="text-destructive">*</span>
-              </FormLabel>
-              <FormControl>
-                <TechStackSelector
-                  selectedStacks={field.value}
-                  onStacksChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* 모집조건 (종류 / 대상 / 인원 / 기술스택) */}
+        <RecruitmentConditionFields form={form} isPending={isPending} />
 
         {/* 카카오톡 오픈채팅 링크 */}
         <FormField
@@ -355,7 +199,7 @@ export default function RecruitmentForm() {
           )}
         />
 
-        {/* 서버 에러 메시지 (필드별 에러가 없는 경우 — DB/인증 오류) */}
+        {/* 서버 에러 메시지 */}
         {actionState.message &&
           !actionState.success &&
           !Object.keys(actionState.errors ?? {}).length && (

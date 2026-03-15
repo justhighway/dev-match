@@ -13,7 +13,6 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/shared/components/ui/drawer';
-
 import { X } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
@@ -21,21 +20,22 @@ import { useMediaQuery } from '@/shared/hooks/use-media-query';
 interface FilterPanelProps {
   title: string;
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (isOpen: boolean) => void;
   trigger: React.ReactNode;
   footer: React.ReactNode;
   children: React.ReactNode;
   contentClassName?: string;
 }
 
-function CloseButton({ onClick }: { onClick: () => void }) {
+function FilterCloseButton({ onClose }: { onClose: () => void }) {
   return (
     <button
       type="button"
-      onClick={onClick}
+      aria-label="닫기"
+      onClick={onClose}
       className="text-muted-foreground hover:text-foreground cursor-pointer rounded-md p-1 transition-colors"
     >
-      <X className="size-4" />
+      <X className="size-4" aria-hidden />
     </button>
   );
 }
@@ -67,7 +67,7 @@ export function FilterFooter({
       <button
         type="button"
         onClick={onApply}
-        className="bg-primary text-primary-foreground hover:bg-primary/90 flex-2 cursor-pointer rounded-lg py-2.5 text-sm font-medium transition-colors"
+        className="bg-primary text-primary-foreground hover:bg-primary/90 grow-[2] cursor-pointer rounded-lg py-2.5 text-sm font-medium transition-colors"
       >
         적용하기
       </button>
@@ -95,7 +95,7 @@ export default function FilterPanel({
             <DialogHeader className="px-6 py-4">
               <div className="flex items-center justify-between">
                 <DialogTitle className="text-base">{title}</DialogTitle>
-                <CloseButton onClick={() => onOpenChange(false)} />
+                <FilterCloseButton onClose={() => onOpenChange(false)} />
               </div>
             </DialogHeader>
             <div className={cn('overflow-y-auto border-b', contentClassName)}>

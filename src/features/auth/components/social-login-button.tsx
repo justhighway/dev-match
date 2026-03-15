@@ -1,11 +1,9 @@
 import { Github } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { GoogleIcon } from './google-icon';
-import {
-  signInWithGithub,
-  signInWithGoogle,
-  signInWithKakao,
-} from '@/features/auth/actions';
+import { signInWithGithub } from '@/features/auth/actions/sign-in-with-github';
+import { signInWithGoogle } from '@/features/auth/actions/sign-in-with-google';
+import { signInWithKakao } from '@/features/auth/actions/sign-in-with-kakao';
 import { KakaoIcon } from './kakao-icon';
 import { cn } from '@/shared/lib/utils';
 

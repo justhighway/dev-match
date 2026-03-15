@@ -20,7 +20,6 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
   return (
     <PostCard
       variant="idea"
-      id={idea.id}
       href={`/ideas/${idea.id}`}
       title={idea.title}
       summary={idea.content}

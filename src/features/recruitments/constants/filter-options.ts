@@ -25,7 +25,7 @@ export const ROLE_OPTIONS = [
   { label: 'DevOps', value: 'devops' },
 ] as const;
 
-// 직군(role)별 기술스택 — TechStackPopover 내부 1차/2차 분류에 사용
+// 직군(role)별 기술스택
 export const TECH_STACKS_BY_ROLE: Record<string, readonly string[]> = {
   frontend: [
     'React',
@@ -158,7 +158,7 @@ export const TECH_STACKS_BY_ROLE: Record<string, readonly string[]> = {
   ],
 };
 
-// 모집종류(projectType)별 기술스택 — 기존 유지
+// 모집종류(projectType)별 기술스택
 export const TECH_STACKS_BY_TYPE: Record<string, readonly string[]> = {
   web: [
     'React',
@@ -280,8 +280,3 @@ export {
   RECRUITMENT_HEADCOUNT_MIN as MIN_HEADCOUNT,
   RECRUITMENT_HEADCOUNT_MAX as MAX_HEADCOUNT,
 } from './recruitment';
-
-export type SortValue = (typeof SORT_OPTIONS)[number]['value'];
-export type RecruitmentTypeValue =
-  (typeof RECRUITMENT_TYPE_OPTIONS)[number]['value'];
-export type RoleValue = (typeof ROLE_OPTIONS)[number]['value'];

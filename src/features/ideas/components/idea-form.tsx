@@ -1,66 +1,124 @@
 'use client';
 
-import { CreateIdeaActionState, createIdeaAction } from '../actions';
-import { CreateIdeaInput, createIdeaSchema } from '../schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useActionState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
+import type { ActionState } from '@/shared/types/action-state';
 import { Button } from '@/shared/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/components/ui/form';
 import { Input } from '@/shared/components/ui/input';
 import { Textarea } from '@/shared/components/ui/textarea';
-import { useActionState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 
-const initialState: CreateIdeaActionState = {
+import { createIdeaAction } from '../actions/create-idea';
+import { type CreateIdeaInput, createIdeaSchema } from '../schemas/create-idea';
+
+const initialState: ActionState = {
   success: false,
   message: null,
   errors: {},
 };
 
 export default function IdeaForm() {
-  const [state, formAction, isPending] = useActionState(
+  const [actionState, formAction, isPending] = useActionState(
     createIdeaAction,
     initialState,
   );
 
   const form = useForm<CreateIdeaInput>({
     resolver: zodResolver(createIdeaSchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     defaultValues: {
       title: '',
       content: '',
     },
   });
 
+  const { setError } = form;
+
+  useEffect(() => {
+    if (actionState.success || !actionState.errors) return;
+
+    (
+      Object.entries(actionState.errors) as [
+        keyof CreateIdeaInput,
+        string[] | undefined,
+      ][]
+    ).forEach(([fieldName, errorMessages]) => {
+      if (errorMessages?.[0]) {
+        setError(fieldName, { type: 'server', message: errorMessages[0] });
+      }
+    });
+  }, [actionState, setError]);
+
   return (
-    <form action={formAction} className="space-y-4">
-      {state.message && !state.success && (
-        <div className="text-sm font-medium text-red-500">
-          ⚠️ {state.message}
-        </div>
-      )}
+    <Form {...form}>
+      <form action={formAction} className="space-y-6">
+        {actionState.message && !actionState.success && (
+          <p role="alert" className="text-destructive text-sm">
+            {actionState.message}
+          </p>
+        )}
 
-      <div>
-        <label className="mb-1 block text-sm font-medium">제목</label>
-        <Input {...form.register('title')} placeholder="제목을 입력하세요" />
-        {/* 클라이언트 에러(RHF) 또는 서버 에러(Action) 표시 */}
-        <p className="mt-1 text-xs text-red-500">
-          {form.formState.errors.title?.message || state.errors?.title?.[0]}
-        </p>
-      </div>
-
-      <div>
-        <label className="mb-1 block text-sm font-medium">내용</label>
-        <Textarea
-          {...form.register('content')}
-          placeholder="내용을 입력하세요"
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel
+                htmlFor="title-input"
+                className="text-base font-semibold"
+              >
+                제목 <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  id="title-input"
+                  placeholder="제목을 입력하세요"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <p className="mt-1 text-xs text-red-500">
-          {form.formState.errors.content?.message || state.errors?.content?.[0]}
-        </p>
-      </div>
 
-      <Button type="submit" disabled={isPending}>
-        {isPending ? '등록 중...' : '아이디어 등록'}
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel
+                htmlFor="content-textarea"
+                className="text-base font-semibold"
+              >
+                내용 <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Textarea
+                  id="content-textarea"
+                  placeholder="내용을 입력하세요"
+                  className="min-h-48 resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" disabled={isPending}>
+          {isPending ? '등록 중...' : '아이디어 등록'}
+        </Button>
+      </form>
+    </Form>
   );
 }

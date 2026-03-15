@@ -12,90 +12,93 @@ interface CarouselSectionProps {
   children: React.ReactNode;
 }
 
-// 렌더와 무관한 정적 값 — 모듈 레벨 상수로 선언
 const ARROW_BUTTON_CLASS = cn(
   'bg-background border-border hover:bg-muted',
   'flex size-8 items-center justify-center rounded-full border shadow-sm transition-all',
   'disabled:cursor-not-allowed disabled:opacity-40 disabled:text-muted-foreground',
 );
 
+const SCROLL_THRESHOLD = 8;
+const FALLBACK_CARD_WIDTH = 300;
+
 export default function CarouselSection({
   title,
   href,
   children,
 }: CarouselSectionProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
 
-    const updateScrollState = () => {
-      setCanScrollLeft(el.scrollLeft > 8);
-      setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8);
+    const updateScrollButtonState = () => {
+      setCanScrollLeft(scrollContainer.scrollLeft > SCROLL_THRESHOLD);
+      setCanScrollRight(
+        scrollContainer.scrollLeft + scrollContainer.clientWidth <
+          scrollContainer.scrollWidth - SCROLL_THRESHOLD,
+      );
     };
 
-    updateScrollState();
-    el.addEventListener('scroll', updateScrollState, { passive: true });
-    const ro = new ResizeObserver(updateScrollState);
-    ro.observe(el);
+    updateScrollButtonState();
+    scrollContainer.addEventListener('scroll', updateScrollButtonState, {
+      passive: true,
+    });
+    const resizeObserver = new ResizeObserver(updateScrollButtonState);
+    resizeObserver.observe(scrollContainer);
 
     return () => {
-      el.removeEventListener('scroll', updateScrollState);
-      ro.disconnect();
+      scrollContainer.removeEventListener('scroll', updateScrollButtonState);
+      resizeObserver.disconnect();
     };
   }, []);
 
-  const scroll = (dir: 'left' | 'right') => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const cardWidth = el.querySelector(':first-child')?.clientWidth ?? 300;
-    el.scrollBy({
-      left: dir === 'left' ? -cardWidth : cardWidth,
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+    const cardWidth =
+      scrollContainer.firstElementChild?.clientWidth ?? FALLBACK_CARD_WIDTH;
+    scrollContainer.scrollBy({
+      left: direction === 'left' ? -cardWidth : cardWidth,
       behavior: 'smooth',
     });
   };
 
   return (
     <section className="w-full">
-      {/* 헤더 */}
       <div className="mb-5 flex items-center justify-between px-1">
         <Link href={href} className="flex items-center gap-3">
           <h2 className="text-xl font-bold tracking-tight md:text-2xl">
             {title}
           </h2>
-          <ArrowRightCircle className="text-neutral-700" />
+          <ArrowRightCircle className="text-neutral-700" aria-hidden />
         </Link>
-        <div className="flex items-center gap-2">
-          {/* 화살표 버튼 (md 이상에서만) */}
-          <div className="hidden items-center gap-1 md:flex">
-            <button
-              type="button"
-              onClick={() => scroll('left')}
-              disabled={!canScrollLeft}
-              aria-label="이전"
-              className={ARROW_BUTTON_CLASS}
-            >
-              <ChevronLeft className="size-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scroll('right')}
-              disabled={!canScrollRight}
-              aria-label="다음"
-              className={ARROW_BUTTON_CLASS}
-            >
-              <ChevronRight className="size-4" />
-            </button>
-          </div>
+        <div className="hidden items-center gap-1 md:flex">
+          <button
+            type="button"
+            onClick={() => scrollCarousel('left')}
+            disabled={!canScrollLeft}
+            aria-label="이전"
+            className={ARROW_BUTTON_CLASS}
+          >
+            <ChevronLeft className="size-4" aria-hidden />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollCarousel('right')}
+            disabled={!canScrollRight}
+            aria-label="다음"
+            className={ARROW_BUTTON_CLASS}
+          >
+            <ChevronRight className="size-4" aria-hidden />
+          </button>
         </div>
       </div>
 
-      {/* 스크롤 영역 */}
       <div
-        ref={scrollRef}
+        ref={scrollContainerRef}
         className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2"
       >
         {children}

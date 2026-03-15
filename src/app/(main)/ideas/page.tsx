@@ -1,4 +1,6 @@
 import { Button } from '@/shared/components/ui/button';
+import Container from '@/shared/components/layout/container';
+import EmptyState from '@/shared/components/ui/empty-state';
 import IdeaCard from '@/features/ideas/components/idea-card';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
@@ -6,10 +8,9 @@ import { getIdeas } from '@/features/ideas/services/get-ideas';
 
 export default async function IdeasPage() {
   const ideas = await getIdeas();
-  void ideas;
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-10">
+    <Container className="max-w-3xl py-10">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">아이디어 광장</h1>
@@ -26,12 +27,7 @@ export default async function IdeasPage() {
       </div>
 
       {ideas.length === 0 ? (
-        <div className="rounded-lg border-dashed py-20 text-center">
-          <p className="text-muted-fourground mb-4">
-            아직 등록된 아이디어가 없습니다.
-          </p>
-          <Button variant="outline">첫 번째 아이디어를 등록해보세요</Button>
-        </div>
+        <EmptyState message="아직 등록된 아이디어가 없습니다." />
       ) : (
         <div className="flex flex-col gap-4">
           {ideas.map((idea) => (
@@ -39,6 +35,6 @@ export default async function IdeasPage() {
           ))}
         </div>
       )}
-    </div>
+    </Container>
   );
 }
